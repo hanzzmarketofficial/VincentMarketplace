@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>VincentMarket</title>
     
-    <!-- Font & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     
     <style>
-        /* ===== RESET ===== */
         * {
             margin: 0;
             padding: 0;
@@ -18,17 +16,17 @@
         }
         body {
             font-family: 'Inter', sans-serif;
-            background: #f0f4ff;
+            background: linear-gradient(135deg, #e8eeff 0%, #f5f9ff 50%, #ffffff 100%);
             min-height: 100vh;
             transition: all 0.3s;
         }
 
-        /* ===== LOADING SCREEN ===== */
+        /* LOADING */
         #loading-screen {
             position: fixed;
             inset: 0;
             z-index: 9999;
-            background: linear-gradient(145deg, #e0e8ff, #f5f9ff);
+            background: linear-gradient(145deg, #dce4ff, #f0f6ff);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -44,13 +42,11 @@
             height: 70px;
             border-radius: 50%;
             border: 6px solid #c0d0ff;
-            border-top-color: #2a3b8c;
+            border-top-color: #1a2a6a;
             animation: spin 0.9s linear infinite;
         }
         @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+            to { transform: rotate(360deg); }
         }
         .loading-text {
             margin-top: 25px;
@@ -66,13 +62,13 @@
             font-size: 0.9rem;
         }
 
-        /* ===== WELCOME OVERLAY ===== */
+        /* WELCOME */
         #welcome-overlay {
             position: fixed;
             inset: 0;
             z-index: 9998;
-            background: rgba(10, 20, 50, 0.75);
-            backdrop-filter: blur(10px);
+            background: rgba(10, 20, 50, 0.8);
+            backdrop-filter: blur(12px);
             display: none;
             align-items: center;
             justify-content: center;
@@ -93,9 +89,7 @@
             animation: popIn 0.5s ease forwards;
         }
         @keyframes popIn {
-            to {
-                transform: scale(1);
-            }
+            to { transform: scale(1); }
         }
         .welcome-box h1 {
             font-size: 2.4rem;
@@ -128,7 +122,7 @@
             box-shadow: 0 12px 28px rgba(26, 42, 106, 0.5);
         }
 
-        /* ===== MAIN APP ===== */
+        /* APP */
         #app {
             display: none;
             padding: 20px 16px 100px;
@@ -139,7 +133,7 @@
             display: block;
         }
 
-        /* HEADER dengan gambar & teks */
+        /* HERO */
         .hero-section {
             background: linear-gradient(145deg, #ffffff, #f5f9ff);
             border-radius: 32px;
@@ -147,13 +141,15 @@
             margin-bottom: 28px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
             text-align: center;
+            border: 1px solid rgba(26, 42, 106, 0.08);
         }
         .hero-section img {
             width: 100%;
-            max-height: 200px;
+            max-height: 220px;
             object-fit: cover;
             border-radius: 20px;
             margin-bottom: 16px;
+            border: 1px solid #e0e8f0;
         }
         .hero-section h2 {
             font-size: 2.2rem;
@@ -170,7 +166,7 @@
             margin-top: 14px;
             font-weight: 600;
             color: #1a2a5a;
-            line-height: 1.7;
+            line-height: 1.8;
             font-size: 0.95rem;
         }
         .hero-section .sub-text i {
@@ -178,7 +174,7 @@
             margin-right: 6px;
         }
 
-        /* MENU OPSI */
+        /* MENU */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -191,7 +187,7 @@
             padding: 14px 6px;
             border-radius: 20px;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #1a2a5a;
             box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
             transition: 0.2s;
@@ -219,7 +215,7 @@
             color: #fff;
         }
 
-        /* PANEL KONTEN */
+        /* CONTENT */
         .content-panel {
             background: #fff;
             border-radius: 28px;
@@ -240,7 +236,7 @@
             margin-bottom: 18px;
         }
 
-        /* PRODUK SLIDER */
+        /* PRODUCT SLIDER */
         .product-slider {
             display: flex;
             gap: 16px;
@@ -262,8 +258,8 @@
         }
 
         .product-card {
-            min-width: 240px;
-            max-width: 260px;
+            min-width: 230px;
+            max-width: 250px;
             background: #f8fbff;
             border-radius: 24px;
             padding: 14px 14px 18px;
@@ -273,38 +269,41 @@
             transition: 0.2s;
         }
         .product-card:hover {
-            transform: scale(1.01);
+            transform: scale(1.02);
             border-color: #1a2a6a;
+            box-shadow: 0 8px 24px rgba(26,42,106,0.12);
         }
         .product-card img {
             width: 100%;
-            height: 120px;
+            height: 140px;
             object-fit: cover;
             border-radius: 16px;
             margin-bottom: 10px;
             background: #dde4f0;
+            border: 1px solid #e0e8f0;
         }
         .product-card .name {
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: #1a2a5a;
             margin-bottom: 4px;
+            min-height: 42px;
         }
         .product-card .price {
-            font-weight: 600;
-            color: #2a4a8a;
-            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1a2a6a;
+            font-size: 1rem;
         }
         .btn-pilih {
             background: #a02030;
             border: none;
             color: #fff;
             font-weight: 700;
-            padding: 8px 14px;
+            padding: 10px 14px;
             border-radius: 30px;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             cursor: pointer;
-            margin-top: 8px;
+            margin-top: 10px;
             transition: 0.2s;
             width: 100%;
         }
@@ -316,12 +315,12 @@
             margin-right: 5px;
         }
 
-        /* ===== MODAL QRIS ===== */
+        /* MODAL QRIS */
         .modal-qris {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.65);
             backdrop-filter: blur(6px);
             z-index: 99999;
             align-items: center;
@@ -334,16 +333,20 @@
         .modal-qris-content {
             background: #fff;
             border-radius: 32px;
-            max-width: 400px;
+            max-width: 420px;
             width: 100%;
             padding: 28px 20px 22px;
             text-align: center;
             position: relative;
             animation: popIn 0.3s ease;
         }
+        .modal-qris-content h3 {
+            color: #1a2a6a;
+            margin-bottom: 12px;
+        }
         .modal-qris-content img {
             width: 100%;
-            max-height: 340px;
+            max-height: 360px;
             object-fit: contain;
             border-radius: 16px;
             background: #f5f8ff;
@@ -381,7 +384,7 @@
             background: #25a55a;
         }
 
-        /* ===== OPSI 2 (Payment) ===== */
+        /* PAYMENT */
         .payment-list {
             display: flex;
             flex-direction: column;
@@ -411,6 +414,11 @@
             font-weight: 400;
             color: #2a3a6a;
         }
+        .payment-item .value a {
+            color: #1a2a6a;
+            text-decoration: underline;
+            cursor: pointer;
+        }
         .payment-note {
             margin-top: 16px;
             background: #fff3e0;
@@ -421,7 +429,7 @@
             border-left: 4px solid #e67a2a;
         }
 
-        /* ===== SOSIAL MEDIA ===== */
+        /* SOSIAL */
         .sosial-list {
             display: flex;
             flex-direction: column;
@@ -494,7 +502,6 @@
             font-weight: 400;
         }
 
-        /* Footer */
         .footer-note {
             margin-top: 30px;
             text-align: center;
@@ -509,36 +516,45 @@
             color: #c0392b;
         }
 
-        /* Responsive */
+        /* MUSIC PLAYER */
+        #music-player {
+            position: fixed;
+            bottom: 12px;
+            right: 12px;
+            z-index: 9997;
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            padding: 6px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            border: 1px solid #e0e8f0;
+        }
+        #music-player iframe {
+            border-radius: 12px;
+            border: none;
+            width: 280px;
+            height: 80px;
+        }
+
         @media (max-width: 480px) {
-            .welcome-box {
-                padding: 30px 20px;
-            }
-            .welcome-box h1 {
-                font-size: 1.8rem;
-            }
-            .hero-section h2 {
-                font-size: 1.6rem;
-            }
-            .menu-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            .product-card {
-                min-width: 180px;
-            }
+            .welcome-box { padding: 30px 20px; }
+            .welcome-box h1 { font-size: 1.8rem; }
+            .hero-section h2 { font-size: 1.6rem; }
+            .menu-grid { grid-template-columns: repeat(3, 1fr); }
+            .product-card { min-width: 170px; }
+            #music-player iframe { width: 200px; height: 70px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== LOADING ===== -->
+    <!-- LOADING -->
     <div id="loading-screen">
         <div class="loader-ring"></div>
-        <div class="loading-text">⌛ Loading...</div>
+        <div class="loading-text">⏳ Loading...</div>
         <div class="loading-sub">VincentMarket</div>
     </div>
 
-    <!-- ===== WELCOME OVERLAY ===== -->
+    <!-- WELCOME -->
     <div id="welcome-overlay">
         <div class="welcome-box">
             <h1>👋 Halo!</h1>
@@ -547,12 +563,12 @@
         </div>
     </div>
 
-    <!-- ===== MAIN APP ===== -->
+    <!-- APP -->
     <div id="app">
 
         <!-- HERO -->
         <div class="hero-section">
-            <img src="https://postimg.cc/5j8k2kft" alt="Vincent Market Banner" />
+            <img src="https://i.postimg.cc/5j8k2kft/image.jpg" alt="Vincent Market" onerror="this.src='https://placehold.co/800x300/1a2a6a/fff?text=Vincent+Market'" />
             <h2>🛒 Vincent Market</h2>
             <div class="sub-text">
                 <i class="fas fa-check-circle"></i> Kenapa Pilih BanditFlow?<br />
@@ -561,7 +577,7 @@
             </div>
         </div>
 
-        <!-- MENU 6 OPSI -->
+        <!-- MENU -->
         <div class="menu-grid" id="menuGrid">
             <button class="menu-btn active" data-target="marketplace"><i class="fas fa-store"></i> MarketPlace</button>
             <button class="menu-btn" data-target="payment"><i class="fas fa-credit-card"></i> Payment</button>
@@ -571,24 +587,24 @@
             <button class="menu-btn" data-target="faq"><i class="fas fa-question-circle"></i> FAQ</button>
         </div>
 
-        <!-- PANEL KONTEN -->
+        <!-- CONTENT -->
         <div class="content-panel" id="contentPanel">
 
-            <!-- ===== MARKETPLACE ===== -->
+            <!-- MARKETPLACE -->
             <div id="marketplace" class="panel-content">
                 <h3>📦 MarketPlace</h3>
-                <p class="sub-title">Geser untuk melihat produk ▼</p>
+                <p class="sub-title">👆 Geser untuk melihat produk</p>
                 <div class="product-slider" id="productSlider"></div>
-                <div class="footer-note" style="margin-top:18px;">
+                <div class="footer-note">
                     <i class="fas fa-shield-alt"></i> Pembelian Produk Di Vincent Market Di Jamin Aman Dan Mendapatkan Garansi
                 </div>
             </div>
 
-            <!-- ===== PAYMENT ===== -->
+            <!-- PAYMENT -->
             <div id="payment" class="panel-content" style="display:none;">
                 <h3>💳 Payment Vincent Market 🏮🍀</h3>
                 <div class="payment-list">
-                    <div class="payment-item"><i class="fas fa-qrcode"></i> <span class="label">Qris</span> <span class="value"><a href="#" onclick="openQrisModal(); return false;">Lihat QRIS</a></span></div>
+                    <div class="payment-item"><i class="fas fa-qrcode"></i> <span class="label">Qris</span> <span class="value"><a onclick="openQrisModal(); return false;">Lihat QRIS</a></span></div>
                     <div class="payment-item"><i class="fas fa-wallet"></i> <span class="label">Dana</span> <span class="value">081973753505</span></div>
                     <div class="payment-item"><i class="fas fa-wallet"></i> <span class="label">Gopay</span> <span class="value">081973753505</span></div>
                     <div class="payment-item"><i class="fas fa-wallet"></i> <span class="label">Ovo</span> <span class="value">081973753505</span></div>
@@ -598,21 +614,21 @@
                 </div>
             </div>
 
-            <!-- ===== SOSIAL MEDIA ===== -->
+            <!-- SOSIAL -->
             <div id="sosial" class="panel-content" style="display:none;">
                 <h3>🌐 Social Media</h3>
                 <div class="sosial-list">
-                    <div class="sosial-item"><i class="fas fa-headset"></i> Customer Service: <a href="https://wa.me/6285928360811" target="_blank">+62 859-2836-0811</a></div>
-                    <div class="sosial-item"><i class="fab fa-tiktok"></i> Tiktok: <a href="https://tiktok.com/@lightgmaill" target="_blank">@lightgmaill</a></div>
+                    <div class="sosial-item"><i class="fas fa-headset"></i> CS: <a href="https://wa.me/6285928360811" target="_blank">+62 859-2836-0811</a></div>
+                    <div class="sosial-item"><i class="fab fa-tiktok"></i> TikTok: <a href="https://tiktok.com/@lightgmaill" target="_blank">@lightgmaill</a></div>
                     <div class="sosial-item"><i class="fab fa-telegram"></i> Telegram: <a href="https://t.me/Vincentmarketplace" target="_blank">t.me/Vincentmarketplace</a></div>
                     <div class="sosial-item"><i class="fas fa-envelope"></i> Gmail: hanzzmarket140@gmail.com</div>
                     <div class="sosial-item"><i class="fab fa-youtube"></i> YouTube: <a href="https://www.youtube.com/@vincent_v1-v6e" target="_blank">@vincent_v1-v6e</a></div>
-                    <div class="sosial-item"><i class="fab fa-whatsapp"></i> Channel WA: <a href="https://whatsapp.com/channel/0029Vb8BSro8PgsFoGnSsm1u" target="_blank">Gabung Channel</a></div>
+                    <div class="sosial-item"><i class="fab fa-whatsapp"></i> Channel WA: <a href="https://whatsapp.com/channel/0029Vb8BSro8PgsFoGnSsm1u" target="_blank">Gabung</a></div>
                     <div class="sosial-item"><i class="fas fa-users"></i> Group WA: <a href="https://chat.whatsapp.com/FtVqQso1drbI8T7TAMP6sc" target="_blank">Gabung Group</a></div>
                 </div>
             </div>
 
-            <!-- ===== TESTIMONI ===== -->
+            <!-- TESTIMONI -->
             <div id="testimoni" class="panel-content" style="display:none;">
                 <h3>⭐ Testimoni</h3>
                 <div class="testimoni-item"><strong>Abdul:</strong> Gokil</div>
@@ -621,7 +637,7 @@
                 <div class="testimoni-item"><strong>Hinata:</strong> Gacor Bot Nya Lekk</div>
             </div>
 
-            <!-- ===== RIWAYAT ===== -->
+            <!-- RIWAYAT -->
             <div id="riwayat" class="panel-content" style="display:none;">
                 <h3>📜 Riwayat Orderan</h3>
                 <div class="riwayat-item">🕒 Anonim - Sewa Bot Jaga Group (Biasa 7 Hari) - Rp 1.000</div>
@@ -632,7 +648,7 @@
                 <div class="riwayat-item" style="font-style:italic;color:#6a7a9a;">... dan lainnya</div>
             </div>
 
-            <!-- ===== FAQ ===== -->
+            <!-- FAQ -->
             <div id="faq" class="panel-content" style="display:none;">
                 <h3>❓ FAQ</h3>
                 <div class="faq-item"><strong>Apa itu Panel Bot?</strong><p>Panel Bot adalah hosting untuk menjalankan bot WhatsApp agar online 24 jam nonstop tanpa harus memakai HP utama.</p></div>
@@ -641,15 +657,14 @@
                 <div class="faq-item"><strong>Apakah Panel Bergaransi?</strong><p>Ya, garansi berlaku selama 1 bulan, selama server tetap aktif dan tidak melanggar ketentuan yang berlaku.</p></div>
             </div>
 
-        </div><!-- end content-panel -->
+        </div>
+    </div>
 
-    </div><!-- end app -->
-
-    <!-- ===== MODAL QRIS ===== -->
+    <!-- MODAL QRIS -->
     <div class="modal-qris" id="modalQris">
         <div class="modal-qris-content">
-            <h3 style="margin-bottom:12px;color:#1a2a6a;">💳 QRIS</h3>
-            <img src="https://www.upload.ee/image/19447703/file.jpg" alt="QRIS" />
+            <h3>💳 QRIS</h3>
+            <img src="https://www.upload.ee/image/19447703/file.jpg" alt="QRIS" onerror="this.src='https://placehold.co/400x400/1a2a6a/fff?text=QRIS'" />
             <div class="btn-group">
                 <button class="btn-download" onclick="downloadQris()"><i class="fas fa-download"></i> 📥 Download Qris</button>
                 <button class="btn-wa" onclick="kirimWa()"><i class="fab fa-whatsapp"></i> 🧾 Kirim Bukti Transfer</button>
@@ -658,270 +673,65 @@
         </div>
     </div>
 
+    <!-- MUSIC PLAYER -->
+    <div id="music-player">
+        <iframe src="https://open.spotify.com/embed/track/3ZwqWrRpylU9nfy99qwKdR?utm_source=generator&autoplay=1" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+
     <script>
         // ============================================================
-        // DATA PRODUK (MarketPlace)
+        // DATA PRODUK dengan gambar yang lebih reliable
         // ============================================================
-        const produkData = [{
-            id: 'sewa_bot_biasa',
-            nama: 'Sewa Bot Jaga Group (Biasa)',
-            harga: 'Rp 1.000',
-            img: 'https://postimg.cc/B8hB6rdQ',
-            paket: 'Biasa 7 Hari',
-            total: 'Rp1000'
-        }, {
-            id: 'sewa_bot_biasa_1bln',
-            nama: 'Sewa Bot Jaga Group (Biasa)',
-            harga: 'Rp 4.000',
-            img: 'https://postimg.cc/B8hB6rdQ',
-            paket: 'Biasa 1 Bulan',
-            total: 'Rp4000'
-        }, {
-            id: 'sewa_bot_biasa_4bln',
-            nama: 'Sewa Bot Jaga Group (Biasa)',
-            harga: 'Rp 15.000',
-            img: 'https://postimg.cc/B8hB6rdQ',
-            paket: 'Biasa 4 Bulan',
-            total: 'Rp15000'
-        }, {
-            id: 'sewa_bot_biasa_6bln',
-            nama: 'Sewa Bot Jaga Group (Biasa)',
-            harga: 'Rp 22.000',
-            img: 'https://postimg.cc/B8hB6rdQ',
-            paket: 'Biasa 6 Bulan',
-            total: 'Rp22000'
-        }, {
-            id: 'sewa_bot_biasa_1thn',
-            nama: 'Sewa Bot Jaga Group (Biasa)',
-            harga: 'Rp 45.000',
-            img: 'https://postimg.cc/B8hB6rdQ',
-            paket: 'Biasa 1 Tahun',
-            total: 'Rp45000'
-        }, {
-            id: 'sewa_bot_premium_7hari',
-            nama: 'Sewa Bot Jaga Group (Premium)',
-            harga: 'Rp 3.000',
-            img: 'https://postimg.cc/B8hB6rdQ',
-            paket: 'Premium 7 Hari',
-            total: 'Rp3000'
-        }, {
-            id: 'sewa_bot_premium_1bln',
-            nama: 'Sewa Bot Jaga Group (Premium)',
-            harga: 'Rp 6.000',
-            img: 'https://postimg.cc/B8hB6rdQ',
-            paket: 'Premium 1 Bulan',
-            total: 'Rp6000'
-        }, {
-            id: 'sewa_bot_premium_4bln',
-            nama: 'Sewa Bot Jaga Group (Premium)',
-            harga: 'Rp 22.000',
-            img: 'https://postimg.cc/B8hB6rdQ',
-            paket: 'Premium 4 Bulan',
-            total: 'Rp22000'
-        }, {
-            id: 'sewa_bot_premium_6bln',
-            nama: 'Sewa Bot Jaga Group (Premium)',
-            harga: 'Rp 35.000',
-            img: 'https://postimg.cc/B8hB6rdQ',
-            paket: 'Premium 6 Bulan',
-            total: 'Rp35000'
-        }, {
-            id: 'sewa_bot_premium_1thn',
-            nama: 'Sewa Bot Jaga Group (Premium)',
-            harga: 'Rp 75.000',
-            img: 'https://postimg.cc/B8hB6rdQ',
-            paket: 'Premium 1 Tahun',
-            total: 'Rp75000'
-        }, {
-            id: 'panel_1gb',
-            nama: 'Panel Pterodactyle 1GB',
-            harga: 'Rp 1.500',
-            img: 'https://postimg.cc/B8hB6rdQ',
-            paket: 'Panel 1GB',
-            total: 'Rp1500'
-        }, {
-            id: 'panel_2gb',
-            nama: 'Panel Pterodactyle 2GB',
-            harga: 'Rp 2.500',
-            img: 'https://postimg.cc/B8hB6rdQ',
-            paket: 'Panel 2GB',
-            total: 'Rp2500'
-        }, {
-            id: 'panel_3gb',
-            nama: 'Panel Pterodactyle 3GB',
-            harga: 'Rp 3.500',
-            img: 'https://postimg.cc/B8hB6rdQ',
-            paket: 'Panel 3GB',
-            total: 'Rp3500'
-        }, {
-            id: 'panel_4gb',
-            nama: 'Panel Pterodactyle 4GB',
-            harga: 'Rp 4.500',
-            img: 'https://postimg.cc/B8hB6rdQ',
-            paket: 'Panel 4GB',
-            total: 'Rp4500'
-        }, {
-            id: 'panel_5gb',
-            nama: 'Panel Pterodactyle 5GB',
-            harga: 'Rp 5.500',
-            img: 'https://postimg.cc/B8hB6rdQ',
-            paket: 'Panel 5GB',
-            total: 'Rp5500'
-        }, {
-            id: 'panel_6gb',
-            nama: 'Panel Pterodactyle 6GB',
-            harga: 'Rp 6.500',
-            img: 'https://postimg.cc/B8hB6rdQ',
-            paket: 'Panel 6GB',
-            total: 'Rp6500'
-        }, {
-            id: 'panel_7gb',
-            nama: 'Panel Pterodactyle 7GB',
-            harga: 'Rp 7.500',
-            img: 'https://postimg.cc/B8hB6rdQ',
-            paket: 'Panel 7GB',
-            total: 'Rp7500'
-        }, {
-            id: 'panel_8gb',
-            nama: 'Panel Pterodactyle 8GB',
-            harga: 'Rp 8.000',
-            img: 'https://postimg.cc/B8hB6rdQ',
-            paket: 'Panel 8GB',
-            total: 'Rp8000'
-        }, {
-            id: 'panel_9gb',
-            nama: 'Panel Pterodactyle 9GB',
-            harga: 'Rp 8.500',
-            img: 'https://postimg.cc/B8hB6rdQ',
-            paket: 'Panel 9GB',
-            total: 'Rp8500'
-        }, {
-            id: 'panel_10gb',
-            nama: 'Panel Pterodactyle 10GB',
-            harga: 'Rp 9.000',
-            img: 'https://postimg.cc/B8hB6rdQ',
-            paket: 'Panel 10GB',
-            total: 'Rp9000'
-        }, {
-            id: 'panel_unlimited',
-            nama: 'Panel Pterodactyle Unlimited',
-            harga: 'Rp 11.000',
-            img: 'https://postimg.cc/B8hB6rdQ',
-            paket: 'Panel Unlimited',
-            total: 'Rp11000'
-        }, {
-            id: 'script_v1',
-            nama: 'Script Website Jualan V1',
-            harga: 'Rp 3.000',
-            img: 'https://postimg.cc/sQmBsBk7',
-            paket: 'Script Website V1',
-            total: 'Rp3000'
-        }, {
-            id: 'script_v2',
-            nama: 'Script Website Jualan V2',
-            harga: 'Rp 7.000',
-            img: 'https://postimg.cc/sG2MXjzT',
-            paket: 'Script Website V2',
-            total: 'Rp7000'
-        }, {
-            id: 'script_v3',
-            nama: 'Script Website Jualan V3',
-            harga: 'Rp 7.000',
-            img: 'https://postimg.cc/XZ3dW0r2',
-            paket: 'Script Website V3',
-            total: 'Rp7000'
-        }, {
-            id: 'script_v4',
-            nama: 'Script Website Jualan V4',
-            harga: 'Rp 11.000',
-            img: 'https://postimg.cc/vD8gXznD',
-            paket: 'Script Website V4',
-            total: 'Rp11000'
-        }, {
-            id: 'bot_pushkontak',
-            nama: 'Script Bot Wa - Pushkontak 1.0',
-            harga: 'Rp 7.000',
-            img: 'https://postimg.cc/dLL7cV40',
-            paket: 'Bot Pushkontak 1.0',
-            total: 'Rp7000'
-        }, {
-            id: 'bot_jaga_grup',
-            nama: 'Script Bot Wa - Jaga Grup 1.0',
-            harga: 'Rp 7.000',
-            img: 'https://postimg.cc/Bth8zK52',
-            paket: 'Bot Jaga Grup 1.0',
-            total: 'Rp7000'
-        }, {
-            id: 'bot_multi_1_1',
-            nama: 'Script Bot Wa Multi Device 1.1',
-            harga: 'Rp 20.000',
-            img: 'https://postimg.cc/1gZ4FcPD',
-            paket: 'Bot Multi Device 1.1',
-            total: 'Rp20000'
-        }, {
-            id: 'bot_multi_2_0',
-            nama: 'Script Bot Wa Multi Device 2.0',
-            harga: 'Rp 17.000',
-            img: 'https://postimg.cc/4KTncbZG',
-            paket: 'Bot Multi Device 2.0',
-            total: 'Rp17000'
-        }, {
-            id: 'bot_store',
-            nama: 'Script Bot Wa Store 1.0',
-            harga: 'Rp 17.000',
-            img: 'https://postimg.cc/9RLfs69C',
-            paket: 'Bot Store 1.0',
-            total: 'Rp17000'
-        }, {
-            id: 'bot_cpanel',
-            nama: 'Script Bot Wa Cpanel 1.0',
-            harga: 'Rp 12.000',
-            img: 'https://postimg.cc/Hc6LFqM7',
-            paket: 'Bot Cpanel 1.0',
-            total: 'Rp12000'
-        }, {
-            id: 'bot_jpm',
-            nama: 'Script Bot Wa Jpm 1.0',
-            harga: 'Rp 12.000',
-            img: 'https://postimg.cc/D8qykY7T',
-            paket: 'Bot Jpm 1.0',
-            total: 'Rp12000'
-        }, {
-            id: 'netflix',
-            nama: 'Netflix Premium',
-            harga: 'Rp 22.000',
-            img: 'https://postimg.cc/YLRnQH12',
-            paket: 'Netflix Premium',
-            total: 'Rp22000'
-        }, {
-            id: 'canva',
-            nama: 'Canva Premium',
-            harga: 'Rp 11.000',
-            img: 'https://postimg.cc/8JhnPWcb',
-            paket: 'Canva Premium',
-            total: 'Rp11000'
-        }, {
-            id: 'capcut',
-            nama: 'Capcut Premium',
-            harga: 'Rp 47.000',
-            img: 'https://postimg.cc/7GvWkXxR',
-            paket: 'Capcut Premium',
-            total: 'Rp47000'
-        }, {
-            id: 'spotify',
-            nama: 'Spotify Premium',
-            harga: 'Rp 26.000',
-            img: 'https://postimg.cc/9zdvW3wP',
-            paket: 'Spotify Premium',
-            total: 'Rp26000'
-        }, {
-            id: 'nokos',
-            nama: 'Nokos All Negara',
-            harga: 'Rp 12.000',
-            img: 'https://postimg.cc/yDbGfs2d',
-            paket: 'Nokos All Negara',
-            total: 'Rp12000'
-        }];
+        const produkData = [
+            // Sewa Bot - Biasa
+            { id: 'biasa_7', nama: 'Sewa Bot Jaga (Biasa 7H)', harga: 'Rp 1.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Biasa 7 Hari', total: 'Rp1000' },
+            { id: 'biasa_1bln', nama: 'Sewa Bot Jaga (Biasa 1B)', harga: 'Rp 4.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Biasa 1 Bulan', total: 'Rp4000' },
+            { id: 'biasa_4bln', nama: 'Sewa Bot Jaga (Biasa 4B)', harga: 'Rp 15.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Biasa 4 Bulan', total: 'Rp15000' },
+            { id: 'biasa_6bln', nama: 'Sewa Bot Jaga (Biasa 6B)', harga: 'Rp 22.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Biasa 6 Bulan', total: 'Rp22000' },
+            { id: 'biasa_1thn', nama: 'Sewa Bot Jaga (Biasa 1T)', harga: 'Rp 45.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Biasa 1 Tahun', total: 'Rp45000' },
+            
+            // Sewa Bot - Premium
+            { id: 'prem_7', nama: 'Sewa Bot Jaga (Premium 7H)', harga: 'Rp 3.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Premium 7 Hari', total: 'Rp3000' },
+            { id: 'prem_1bln', nama: 'Sewa Bot Jaga (Premium 1B)', harga: 'Rp 6.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Premium 1 Bulan', total: 'Rp6000' },
+            { id: 'prem_4bln', nama: 'Sewa Bot Jaga (Premium 4B)', harga: 'Rp 22.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Premium 4 Bulan', total: 'Rp22000' },
+            { id: 'prem_6bln', nama: 'Sewa Bot Jaga (Premium 6B)', harga: 'Rp 35.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Premium 6 Bulan', total: 'Rp35000' },
+            { id: 'prem_1thn', nama: 'Sewa Bot Jaga (Premium 1T)', harga: 'Rp 75.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Premium 1 Tahun', total: 'Rp75000' },
+            
+            // Panel Pterodactyle
+            { id: 'panel_1gb', nama: 'Panel Pterodactyle 1GB', harga: 'Rp 1.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 1GB', total: 'Rp1500' },
+            { id: 'panel_2gb', nama: 'Panel Pterodactyle 2GB', harga: 'Rp 2.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 2GB', total: 'Rp2500' },
+            { id: 'panel_3gb', nama: 'Panel Pterodactyle 3GB', harga: 'Rp 3.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 3GB', total: 'Rp3500' },
+            { id: 'panel_4gb', nama: 'Panel Pterodactyle 4GB', harga: 'Rp 4.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 4GB', total: 'Rp4500' },
+            { id: 'panel_5gb', nama: 'Panel Pterodactyle 5GB', harga: 'Rp 5.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 5GB', total: 'Rp5500' },
+            { id: 'panel_6gb', nama: 'Panel Pterodactyle 6GB', harga: 'Rp 6.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 6GB', total: 'Rp6500' },
+            { id: 'panel_7gb', nama: 'Panel Pterodactyle 7GB', harga: 'Rp 7.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 7GB', total: 'Rp7500' },
+            { id: 'panel_8gb', nama: 'Panel Pterodactyle 8GB', harga: 'Rp 8.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 8GB', total: 'Rp8000' },
+            { id: 'panel_9gb', nama: 'Panel Pterodactyle 9GB', harga: 'Rp 8.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 9GB', total: 'Rp8500' },
+            { id: 'panel_10gb', nama: 'Panel Pterodactyle 10GB', harga: 'Rp 9.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 10GB', total: 'Rp9000' },
+            { id: 'panel_unlimited', nama: 'Panel Pterodactyle Unlimited', harga: 'Rp 11.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel Unlimited', total: 'Rp11000' },
+            
+            // Script Website
+            { id: 'script_v1', nama: 'Script Website V1', harga: 'Rp 3.000', img: 'https://i.postimg.cc/sQmBsBk7/image.jpg', paket: 'Script Website V1', total: 'Rp3000' },
+            { id: 'script_v2', nama: 'Script Website V2', harga: 'Rp 7.000', img: 'https://i.postimg.cc/sG2MXjzT/image.jpg', paket: 'Script Website V2', total: 'Rp7000' },
+            { id: 'script_v3', nama: 'Script Website V3', harga: 'Rp 7.000', img: 'https://i.postimg.cc/XZ3dW0r2/image.jpg', paket: 'Script Website V3', total: 'Rp7000' },
+            { id: 'script_v4', nama: 'Script Website V4', harga: 'Rp 11.000', img: 'https://i.postimg.cc/vD8gXznD/image.jpg', paket: 'Script Website V4', total: 'Rp11000' },
+            
+            // Script Bot
+            { id: 'bot_push', nama: 'Bot Wa - Pushkontak 1.0', harga: 'Rp 7.000', img: 'https://i.postimg.cc/dLL7cV40/image.jpg', paket: 'Bot Pushkontak 1.0', total: 'Rp7000' },
+            { id: 'bot_jaga', nama: 'Bot Wa - Jaga Grup 1.0', harga: 'Rp 7.000', img: 'https://i.postimg.cc/Bth8zK52/image.jpg', paket: 'Bot Jaga Grup 1.0', total: 'Rp7000' },
+            { id: 'bot_md1', nama: 'Bot Wa - Multi Device 1.1', harga: 'Rp 20.000', img: 'https://i.postimg.cc/1gZ4FcPD/image.jpg', paket: 'Bot Multi Device 1.1', total: 'Rp20000' },
+            { id: 'bot_md2', nama: 'Bot Wa - Multi Device 2.0', harga: 'Rp 17.000', img: 'https://i.postimg.cc/4KTncbZG/image.jpg', paket: 'Bot Multi Device 2.0', total: 'Rp17000' },
+            { id: 'bot_store', nama: 'Bot Wa - Store 1.0', harga: 'Rp 17.000', img: 'https://i.postimg.cc/9RLfs69C/image.jpg', paket: 'Bot Store 1.0', total: 'Rp17000' },
+            { id: 'bot_cpanel', nama: 'Bot Wa - Cpanel 1.0', harga: 'Rp 12.000', img: 'https://i.postimg.cc/Hc6LFqM7/image.jpg', paket: 'Bot Cpanel 1.0', total: 'Rp12000' },
+            { id: 'bot_jpm', nama: 'Bot Wa - Jpm 1.0', harga: 'Rp 12.000', img: 'https://i.postimg.cc/D8qykY7T/image.jpg', paket: 'Bot Jpm 1.0', total: 'Rp12000' },
+            
+            // APK Premium
+            { id: 'netflix', nama: 'Netflix Premium', harga: 'Rp 22.000', img: 'https://i.postimg.cc/YLRnQH12/image.jpg', paket: 'Netflix Premium', total: 'Rp22000' },
+            { id: 'canva', nama: 'Canva Premium', harga: 'Rp 11.000', img: 'https://i.postimg.cc/8JhnPWcb/image.jpg', paket: 'Canva Premium', total: 'Rp11000' },
+            { id: 'capcut', nama: 'Capcut Premium', harga: 'Rp 47.000', img: 'https://i.postimg.cc/7GvWkXxR/image.jpg', paket: 'Capcut Premium', total: 'Rp47000' },
+            { id: 'spotify', nama: 'Spotify Premium', harga: 'Rp 26.000', img: 'https://i.postimg.cc/9zdvW3wP/image.jpg', paket: 'Spotify Premium', total: 'Rp26000' },
+            { id: 'nokos', nama: 'Nokos All Negara', harga: 'Rp 12.000', img: 'https://i.postimg.cc/yDbGfs2d/image.jpg', paket: 'Nokos All Negara', total: 'Rp12000' }
+        ];
 
         // ============================================================
         // RENDER PRODUK
@@ -933,7 +743,7 @@
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.innerHTML = `
-                    <img src="${p.img}" alt="${p.nama}" onerror="this.src='https://placehold.co/400x200/1a2a6a/fff?text=VincentMarket'" />
+                    <img src="${p.img}" alt="${p.nama}" onerror="this.src='https://placehold.co/400x200/1a2a6a/fff?text=Vincent+Market'" />
                     <div class="name">${p.nama}</div>
                     <div class="price">${p.harga}</div>
                     <button class="btn-pilih" data-paket="${p.paket}" data-total="${p.total}"><i class="fas fa-shopping-cart"></i> Pilih Paket</button>
@@ -941,10 +751,8 @@
                 slider.appendChild(card);
             });
 
-            // Event listener untuk tombol pilih paket
             document.querySelectorAll('.btn-pilih').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
+                btn.addEventListener('click', function() {
                     const paket = this.dataset.paket;
                     const total = this.dataset.total;
                     openQrisModal(paket, total);
@@ -955,8 +763,8 @@
         // ============================================================
         // MODAL QRIS
         // ============================================================
-        let selectedPaket = '';
-        let selectedTotal = '';
+        let selectedPaket = 'Paket';
+        let selectedTotal = 'Rp0';
 
         function openQrisModal(paket = 'Paket', total = 'Rp0') {
             selectedPaket = paket;
@@ -979,8 +787,7 @@
 
         function kirimWa() {
             const msg = `Halo Admin, saya sudah bayar. Paket: ${selectedPaket} Total: ${selectedTotal} Saya lampirkan bukti transfer`;
-            const url = `https://wa.me?text=${encodeURIComponent(msg)}`;
-            window.open(url, '_blank');
+            window.open(`https://wa.me?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         // ============================================================
@@ -1000,7 +807,6 @@
             btn.addEventListener('click', function() {
                 menuBtns.forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
-
                 const target = this.dataset.target;
                 Object.keys(panels).forEach(key => {
                     panels[key].style.display = (key === target) ? 'block' : 'none';
@@ -1009,72 +815,28 @@
         });
 
         // ============================================================
-        // LOADING -> WELCOME -> APP
+        // INIT
         // ============================================================
         window.addEventListener('DOMContentLoaded', function() {
-            // render produk
             renderProduk();
 
-            // Loading 2 detik
             setTimeout(() => {
                 document.getElementById('loading-screen').classList.add('hide');
-                // Tampilkan welcome
                 document.getElementById('welcome-overlay').classList.add('show');
             }, 2000);
 
-            // Tombol Start
             document.getElementById('btnStart').addEventListener('click', function() {
                 document.getElementById('welcome-overlay').classList.remove('show');
                 document.getElementById('app').classList.add('active');
-                // Putar lagu Spotify (iframe embed)
-                playMusic();
             });
         });
 
-        // ============================================================
-        // MUSIC (Spotify Embed) - diputar saat website dibuka
-        // ============================================================
-        let musicPlayer = null;
-
-        function playMusic() {
-            if (musicPlayer) return;
-            // Buat iframe Spotify embed (autoplay)
-            const iframe = document.createElement('iframe');
-            iframe.style.position = 'fixed';
-            iframe.style.bottom = '10px';
-            iframe.style.right = '10px';
-            iframe.style.width = '300px';
-            iframe.style.height = '80px';
-            iframe.style.border = 'none';
-            iframe.style.borderRadius = '12px';
-            iframe.style.zIndex = '9999';
-            iframe.style.boxShadow = '0 4px 20px rgba(0,0,0,0.2)';
-            // Gunakan embed spotify dengan autoplay
-            iframe.src = 'https://open.spotify.com/embed/track/3ZwqWrRpylU9nfy99qwKdR?utm_source=generator&autoplay=1';
-            iframe.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
-            iframe.loading = 'lazy';
-            document.body.appendChild(iframe);
-            musicPlayer = iframe;
-
-            // Coba putar dengan cara lain jika iframe tidak autoplay
-            setTimeout(() => {
-                try {
-                    // Fallback: buka link di tab baru (opsional)
-                    // window.open('https://open.spotify.com/track/3ZwqWrRpylU9nfy99qwKdR?si=hoeNdQzuQCqWW7TgiAHYdg', '_blank');
-                } catch (e) {}
-            }, 1000);
-        }
-
-        // ============================================================
-        // CLOSE MODAL SAAT KLIK DI LUAR
-        // ============================================================
+        // Tutup modal klik luar
         document.getElementById('modalQris').addEventListener('click', function(e) {
             if (e.target === this) closeQris();
         });
 
         console.log('🚀 VincentMarket siap!');
     </script>
-
 </body>
-</html
-  
+</html>
