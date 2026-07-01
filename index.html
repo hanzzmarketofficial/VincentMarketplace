@@ -1,543 +1,1080 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>VincentMarket</title>
-  <!-- Font & Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VincentMarket</title>
+    
+    <!-- Font & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    
+    <style>
+        /* ===== RESET ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f4ff;
+            min-height: 100vh;
+            transition: all 0.3s;
+        }
 
-    body {
-      background: linear-gradient(145deg, #e0f0ff 0%, #f5faff 100%);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      padding: 16px;
-    }
+        /* ===== LOADING SCREEN ===== */
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: linear-gradient(145deg, #e0e8ff, #f5f9ff);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease;
+        }
+        #loading-screen.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .loader-ring {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 6px solid #c0d0ff;
+            border-top-color: #2a3b8c;
+            animation: spin 0.9s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .loading-text {
+            margin-top: 25px;
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #1a2a6a;
+            letter-spacing: 2px;
+        }
+        .loading-sub {
+            color: #4a5a9a;
+            font-weight: 400;
+            margin-top: 6px;
+            font-size: 0.9rem;
+        }
 
-    /* container utama seperti card */
-    .app-container {
-      max-width: 480px;
-      width: 100%;
-      background: #ffffff;
-      border-radius: 40px 40px 28px 28px;
-      box-shadow: 0 20px 40px rgba(0, 20, 40, 0.2);
-      overflow: hidden;
-      position: relative;
-      backdrop-filter: blur(2px);
-      transition: all 0.2s;
-      border: 1px solid rgba(255,255,255,0.5);
-    }
+        /* ===== WELCOME OVERLAY ===== */
+        #welcome-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9998;
+            background: rgba(10, 20, 50, 0.75);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        #welcome-overlay.show {
+            display: flex;
+        }
+        .welcome-box {
+            background: linear-gradient(145deg, #ffffff, #f0f5ff);
+            padding: 40px 50px;
+            border-radius: 40px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 520px;
+            width: 90%;
+            transform: scale(0.9);
+            animation: popIn 0.5s ease forwards;
+        }
+        @keyframes popIn {
+            to {
+                transform: scale(1);
+            }
+        }
+        .welcome-box h1 {
+            font-size: 2.4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #1a2a6a, #3a5aaa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .welcome-box p {
+            color: #334;
+            font-weight: 500;
+            margin-bottom: 25px;
+            font-size: 1rem;
+        }
+        .btn-start {
+            background: linear-gradient(135deg, #1a2a6a, #3a5aaa);
+            border: none;
+            padding: 14px 44px;
+            border-radius: 60px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(26, 42, 106, 0.3);
+            transition: 0.25s;
+        }
+        .btn-start:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(26, 42, 106, 0.5);
+        }
 
-    /* loading screen */
-    #loadingScreen {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 560px;
-      padding: 30px 20px;
-      background: #f0f7fe;
-      text-align: center;
-    }
+        /* ===== MAIN APP ===== */
+        #app {
+            display: none;
+            padding: 20px 16px 100px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        #app.active {
+            display: block;
+        }
 
-    .spinner {
-      width: 70px;
-      height: 70px;
-      border: 6px solid #c0d9f0;
-      border-top: 6px solid #1e3c5a;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 30px;
-      box-shadow: 0 0 0 4px rgba(30, 60, 90, 0.1);
-    }
+        /* HEADER dengan gambar & teks */
+        .hero-section {
+            background: linear-gradient(145deg, #ffffff, #f5f9ff);
+            border-radius: 32px;
+            padding: 20px 20px 30px;
+            margin-bottom: 28px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+            text-align: center;
+        }
+        .hero-section img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 20px;
+            margin-bottom: 16px;
+        }
+        .hero-section h2 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #1a2a6a, #4a6aaa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .hero-section .sub-text {
+            background: #eef4ff;
+            padding: 14px 18px;
+            border-radius: 16px;
+            margin-top: 14px;
+            font-weight: 600;
+            color: #1a2a5a;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+        .hero-section .sub-text i {
+            color: #2a4a8a;
+            margin-right: 6px;
+        }
 
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* MENU OPSI */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            margin: 20px 0 28px;
+        }
+        .menu-btn {
+            background: #fff;
+            border: none;
+            padding: 14px 6px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #1a2a5a;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+            transition: 0.2s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            border: 1px solid rgba(26, 42, 106, 0.08);
+        }
+        .menu-btn i {
+            font-size: 1.1rem;
+            color: #2a4a8a;
+        }
+        .menu-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 22px rgba(26, 42, 106, 0.15);
+            background: #f5f9ff;
+        }
+        .menu-btn.active {
+            background: #1a2a6a;
+            color: #fff;
+        }
+        .menu-btn.active i {
+            color: #fff;
+        }
 
-    .welcome-text {
-      font-size: 2.1rem;
-      font-weight: 700;
-      color: #0a2647;
-      letter-spacing: -0.5px;
-      text-shadow: 0 4px 12px rgba(0,40,80,0.08);
-      background: rgba(255,255,255,0.6);
-      padding: 14px 28px;
-      border-radius: 60px;
-      backdrop-filter: blur(6px);
-      border: 1px solid rgba(255,255,255,0.7);
-      margin-bottom: 40px;
-    }
+        /* PANEL KONTEN */
+        .content-panel {
+            background: #fff;
+            border-radius: 28px;
+            padding: 24px 18px;
+            box-shadow: 0 6px 28px rgba(0, 0, 0, 0.04);
+            min-height: 260px;
+            border: 1px solid rgba(26, 42, 106, 0.06);
+        }
+        .content-panel h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1a2a6a;
+            margin-bottom: 12px;
+        }
+        .content-panel .sub-title {
+            color: #4a5a7a;
+            font-weight: 500;
+            margin-bottom: 18px;
+        }
 
-    .welcome-text span {
-      background: linear-gradient(135deg, #0f3b5c, #1f6390);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+        /* PRODUK SLIDER */
+        .product-slider {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 8px 4px 16px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+        .product-slider::-webkit-scrollbar {
+            height: 6px;
+        }
+        .product-slider::-webkit-scrollbar-track {
+            background: #e8edf8;
+            border-radius: 10px;
+        }
+        .product-slider::-webkit-scrollbar-thumb {
+            background: #2a4a8a;
+            border-radius: 10px;
+        }
 
-    .btn-start {
-      background: #1e3c5a;
-      border: none;
-      padding: 16px 48px;
-      border-radius: 60px;
-      font-size: 1.4rem;
-      font-weight: 600;
-      color: white;
-      box-shadow: 0 12px 20px rgba(20, 50, 80, 0.3);
-      transition: 0.2s;
-      cursor: pointer;
-      border: 1px solid #89b9e6;
-      letter-spacing: 1px;
-    }
+        .product-card {
+            min-width: 240px;
+            max-width: 260px;
+            background: #f8fbff;
+            border-radius: 24px;
+            padding: 14px 14px 18px;
+            scroll-snap-align: start;
+            border: 1px solid #e8efff;
+            flex-shrink: 0;
+            transition: 0.2s;
+        }
+        .product-card:hover {
+            transform: scale(1.01);
+            border-color: #1a2a6a;
+        }
+        .product-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 10px;
+            background: #dde4f0;
+        }
+        .product-card .name {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #1a2a5a;
+            margin-bottom: 4px;
+        }
+        .product-card .price {
+            font-weight: 600;
+            color: #2a4a8a;
+            font-size: 0.95rem;
+        }
+        .btn-pilih {
+            background: #a02030;
+            border: none;
+            color: #fff;
+            font-weight: 700;
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: 0.2s;
+            width: 100%;
+        }
+        .btn-pilih:hover {
+            background: #7a1825;
+            transform: scale(1.02);
+        }
+        .btn-pilih i {
+            margin-right: 5px;
+        }
 
-    .btn-start:hover {
-      transform: scale(1.03);
-      background: #13324b;
-      box-shadow: 0 16px 28px rgba(10, 40, 70, 0.4);
-    }
+        /* ===== MODAL QRIS ===== */
+        .modal-qris {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(6px);
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-qris.open {
+            display: flex;
+        }
+        .modal-qris-content {
+            background: #fff;
+            border-radius: 32px;
+            max-width: 400px;
+            width: 100%;
+            padding: 28px 20px 22px;
+            text-align: center;
+            position: relative;
+            animation: popIn 0.3s ease;
+        }
+        .modal-qris-content img {
+            width: 100%;
+            max-height: 340px;
+            object-fit: contain;
+            border-radius: 16px;
+            background: #f5f8ff;
+            padding: 10px;
+            border: 1px solid #e0e8f0;
+        }
+        .modal-qris-content .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .modal-qris-content .btn-group button {
+            border: none;
+            padding: 12px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.2s;
+            background: #1a1a2e;
+            color: #fff;
+        }
+        .modal-qris-content .btn-group button:hover {
+            transform: scale(1.02);
+            opacity: 0.9;
+        }
+        .modal-qris-content .btn-group .btn-tutup {
+            background: #3a3a4e;
+        }
+        .modal-qris-content .btn-group .btn-download {
+            background: #1a2a6a;
+        }
+        .modal-qris-content .btn-group .btn-wa {
+            background: #25a55a;
+        }
 
-    /* Main content (hidden awal) */
-    #mainContent {
-      display: none;
-      background: #f8fcff;
-    }
+        /* ===== OPSI 2 (Payment) ===== */
+        .payment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 12px;
+        }
+        .payment-item {
+            background: #f5f9ff;
+            padding: 14px 18px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-weight: 600;
+            color: #1a2a5a;
+            border: 1px solid #e0e8f8;
+        }
+        .payment-item i {
+            font-size: 1.6rem;
+            width: 32px;
+            color: #1a2a6a;
+        }
+        .payment-item .label {
+            flex: 1;
+        }
+        .payment-item .value {
+            font-weight: 400;
+            color: #2a3a6a;
+        }
+        .payment-note {
+            margin-top: 16px;
+            background: #fff3e0;
+            padding: 14px;
+            border-radius: 16px;
+            font-weight: 600;
+            color: #7a3a1a;
+            border-left: 4px solid #e67a2a;
+        }
 
-    /* header with image & brand */
-    .hero-section {
-      background: linear-gradient(135deg, #d4e6f5, #eef6fd);
-      padding: 20px 18px 20px 18px;
-      border-bottom: 2px solid rgba(150, 190, 220, 0.3);
-      text-align: center;
-    }
+        /* ===== SOSIAL MEDIA ===== */
+        .sosial-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .sosial-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            background: #f5f9ff;
+            border-radius: 16px;
+            font-weight: 600;
+            color: #1a2a5a;
+            border: 1px solid #e0e8f8;
+        }
+        .sosial-item i {
+            font-size: 1.4rem;
+            width: 32px;
+            color: #1a2a6a;
+        }
+        .sosial-item a {
+            color: #1a2a6a;
+            text-decoration: none;
+            font-weight: 500;
+            word-break: break-all;
+        }
+        .sosial-item a:hover {
+            text-decoration: underline;
+        }
 
-    .hero-image {
-      width: 100%;
-      max-height: 200px;
-      object-fit: cover;
-      border-radius: 28px;
-      box-shadow: 0 8px 18px rgba(0, 30, 60, 0.15);
-      border: 2px solid white;
-      margin-bottom: 10px;
-      background: #b6d2e8;
-    }
+        /* TESTIMONI */
+        .testimoni-item {
+            background: #f5f9ff;
+            padding: 14px 18px;
+            border-radius: 18px;
+            margin-bottom: 10px;
+            border-left: 4px solid #2a4a8a;
+        }
+        .testimoni-item strong {
+            color: #1a2a6a;
+        }
 
-    .brand-title {
-      font-size: 2.5rem;
-      font-weight: 800;
-      background: linear-gradient(145deg, #0a2c47, #1b5d8a);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-shadow: 0 2px 10px rgba(20,80,130,0.2);
-      letter-spacing: 1px;
-      margin-top: 2px;
-    }
+        /* RIWAYAT */
+        .riwayat-item {
+            background: #f5f9ff;
+            padding: 12px 16px;
+            border-radius: 14px;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #1a2a5a;
+            border: 1px solid #e0e8f8;
+        }
 
-    .hero-sub {
-      background: rgba(255,255,255,0.6);
-      backdrop-filter: blur(4px);
-      padding: 12px 16px;
-      border-radius: 40px;
-      font-weight: 500;
-      color: #10354f;
-      font-size: 0.9rem;
-      margin-top: 6px;
-      border: 1px solid rgba(255,255,255,0.8);
-      display: inline-block;
-    }
+        /* FAQ */
+        .faq-item {
+            background: #f5f9ff;
+            padding: 14px 18px;
+            border-radius: 16px;
+            margin-bottom: 10px;
+            border: 1px solid #e0e8f8;
+        }
+        .faq-item strong {
+            display: block;
+            color: #1a2a6a;
+            margin-bottom: 4px;
+        }
+        .faq-item p {
+            color: #2a3a5a;
+            font-weight: 400;
+        }
 
-    .feature-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin: 18px 0 8px;
-      text-align: left;
-    }
+        /* Footer */
+        .footer-note {
+            margin-top: 30px;
+            text-align: center;
+            font-weight: 600;
+            color: #1a2a5a;
+            background: #e8efff;
+            padding: 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        .footer-note i {
+            color: #c0392b;
+        }
 
-    .feature-item {
-      background: white;
-      padding: 8px 12px;
-      border-radius: 30px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: #0e344d;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border: 1px solid #d9e9f5;
-    }
-
-    .feature-item i {
-      color: #1f6a96;
-      font-size: 1rem;
-      width: 22px;
-    }
-
-    /* menu opsi */
-    .menu-options {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      padding: 16px 12px;
-      background: #ecf5fc;
-      border-bottom: 1px solid #c8ddee;
-    }
-
-    .menu-btn {
-      background: white;
-      border: 1px solid #b8d2e8;
-      padding: 10px 14px;
-      border-radius: 40px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      color: #103a55;
-      box-shadow: 0 2px 6px rgba(0, 20, 40, 0.04);
-      transition: 0.15s;
-      flex: 1 0 auto;
-      max-width: 120px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      background: #f4faff;
-    }
-
-    .menu-btn i {
-      color: #1f6a96;
-    }
-
-    .menu-btn:hover, .menu-btn.active {
-      background: #1e3c5a;
-      color: white;
-      border-color: #1e3c5a;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 14px rgba(20, 60, 100, 0.2);
-    }
-    .menu-btn:hover i, .menu-btn.active i {
-      color: white;
-    }
-
-    /* konten dinamis */
-    #contentArea {
-      padding: 16px 14px 30px;
-      background: #f5faff;
-    }
-
-    .product-slider {
-      display: flex;
-      overflow-x: auto;
-      gap: 20px;
-      padding: 10px 4px 20px;
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-      scroll-snap-type: x mandatory;
-    }
-
-    .product-slider::-webkit-scrollbar {
-      height: 6px;
-    }
-    .product-slider::-webkit-scrollbar-thumb {
-      background: #b0cfe0;
-      border-radius: 20px;
-    }
-
-    .product-card {
-      min-width: 220px;
-      max-width: 260px;
-      background: white;
-      border-radius: 30px;
-      padding: 16px 14px 20px;
-      box-shadow: 0 6px 18px rgba(0, 30, 60, 0.08);
-      scroll-snap-align: start;
-      border: 1px solid #e0edf7;
-      flex-shrink: 0;
-      transition: 0.15s;
-    }
-
-    .product-card img {
-      width: 100%;
-      height: 130px;
-      object-fit: cover;
-      border-radius: 20px;
-      background: #dae9f5;
-      margin-bottom: 12px;
-      border: 1px solid white;
-    }
-
-    .product-card h4 {
-      font-size: 1rem;
-      color: #0d334b;
-      margin-bottom: 4px;
-    }
-
-    .product-card .price {
-      font-weight: 700;
-      color: #0f3f60;
-      font-size: 1.1rem;
-    }
-
-    .btn-pilih {
-      background: #a0242a;
-      border: none;
-      color: white;
-      padding: 8px 16px;
-      border-radius: 40px;
-      font-weight: 600;
-      font-size: 0.8rem;
-      margin-top: 10px;
-      width: 100%;
-      transition: 0.15s;
-      border: 1px solid #63161b;
-      cursor: pointer;
-      box-shadow: 0 4px 6px rgba(100, 20, 20, 0.2);
-    }
-
-    .btn-pilih:hover {
-      background: #7c1b21;
-      transform: scale(0.97);
-    }
-
-    /* modal qris */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(6px);
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-      padding: 20px;
-    }
-
-    .modal-content {
-      background: white;
-      max-width: 380px;
-      width: 100%;
-      border-radius: 40px;
-      padding: 24px 20px 28px;
-      box-shadow: 0 30px 50px rgba(0,0,0,0.4);
-      animation: popIn 0.25s;
-      border: 1px solid #cedce8;
-    }
-
-    @keyframes popIn {
-      0% { transform: scale(0.9); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    .modal-content img {
-      width: 100%;
-      border-radius: 24px;
-      border: 2px solid #d3e2ee;
-      background: #eaf1f8;
-    }
-
-    .modal-btn-group {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 18px;
-    }
-
-    .modal-btn {
-      background: #1f2e3f;
-      border: none;
-      padding: 12px;
-      border-radius: 60px;
-      font-weight: 600;
-      color: white;
-      font-size: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      transition: 0.1s;
-      border: 1px solid #384b5e;
-      cursor: pointer;
-    }
-
-    .modal-btn i {
-      font-size: 1.2rem;
-    }
-
-    .modal-btn:hover {
-      background: #111e2b;
-      transform: scale(0.98);
-    }
-
-    .btn-close-modal {
-      background: #7a2020;
-      border-color: #551818;
-      margin-top: 6px;
-    }
-
-    .btn-close-modal:hover {
-      background: #4f1515;
-    }
-
-    .faq-item {
-      background: white;
-      padding: 14px 16px;
-      border-radius: 20px;
-      margin-bottom: 10px;
-      border-left: 6px solid #1f6a96;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-    }
-
-    .faq-item strong {
-      color: #0f3f60;
-    }
-
-    .testimoni-card {
-      background: white;
-      padding: 16px;
-      border-radius: 24px;
-      margin-bottom: 12px;
-      border: 1px solid #cfe0ed;
-    }
-
-    .riwayat-item {
-      background: #ecf5fc;
-      padding: 12px 16px;
-      border-radius: 40px;
-      margin-bottom: 8px;
-      font-weight: 500;
-    }
-
-    /* tiny */
-    .text-muted {
-      color: #3a5d79;
-      font-size: 0.85rem;
-    }
-
-    .flex-center {
-      display: flex;
-      justify-content: center;
-    }
-
-    /* responsive */
-    @media (max-width: 400px) {
-      .menu-btn { font-size: 0.7rem; padding: 8px 6px; min-width: 60px; }
-      .brand-title { font-size: 2rem; }
-    }
-
-    /* background biru muda, putih, abu-abu terlihat di komponen */
-    .bg-soft-blue { background: #e3f0fa; }
-    .bg-white { background: #ffffff; }
-    .bg-gray { background: #eef3f7; }
-
-    .footer-note {
-      text-align: center;
-      font-size: 0.7rem;
-      color: #567a94;
-      padding: 14px 0 6px;
-    }
-
-    .hidden { display: none; }
-  </style>
+        /* Responsive */
+        @media (max-width: 480px) {
+            .welcome-box {
+                padding: 30px 20px;
+            }
+            .welcome-box h1 {
+                font-size: 1.8rem;
+            }
+            .hero-section h2 {
+                font-size: 1.6rem;
+            }
+            .menu-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .product-card {
+                min-width: 180px;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="app-container" id="appContainer">
 
-  <!-- LOADING SCREEN -->
-  <div id="loadingScreen">
-    <div class="spinner"></div>
-    <div class="welcome-text"><span>Halo Selamat Datang</span><br>Di VincentMarket</div>
-    <button class="btn-start" id="btnStart"><i class="fas fa-rocket" style="margin-right: 10px;"></i>START</button>
-  </div>
-
-  <!-- MAIN CONTENT -->
-  <div id="mainContent">
-    <!-- hero -->
-    <div class="hero-section">
-      <img src="https://i.postimg.cc/5j8k2kft/image.jpg" alt="Vincent Market" class="hero-image" onerror="this.src='https://via.placeholder.com/400x180/9bbdd4/ffffff?text=Vincent+Market'">
-      <div class="brand-title">Vincent Market</div>
-      <div class="hero-sub"><i class="fas fa-bolt" style="margin-right:6px;color:#1f6a96;"></i>Teknologi & Otomasi</div>
-
-      <div class="feature-grid">
-        <div class="feature-item"><i class="fas fa-clock"></i> Proses otomatis 1 detik</div>
-        <div class="feature-item"><i class="fas fa-server"></i> Server bot aman & stabil</div>
-        <div class="feature-item"><i class="fas fa-tag"></i> Harga murah & terjangkau</div>
-        <div class="feature-item"><i class="fas fa-headset"></i> Support fast respon 24 jam</div>
-      </div>
+    <!-- ===== LOADING ===== -->
+    <div id="loading-screen">
+        <div class="loader-ring"></div>
+        <div class="loading-text">⌛ Loading...</div>
+        <div class="loading-sub">VincentMarket</div>
     </div>
 
-    <!-- menu 6 opsi -->
-    <div class="menu-options" id="menuOptions">
-      <button class="menu-btn active" data-opt="1"><i class="fas fa-store"></i> Market</button>
-      <button class="menu-btn" data-opt="2"><i class="fas fa-credit-card"></i> Payment</button>
-      <button class="menu-btn" data-opt="3"><i class="fas fa-share-alt"></i> Social</button>
-      <button class="menu-btn" data-opt="4"><i class="fas fa-comment"></i> Testimoni</button>
-      <button class="menu-btn" data-opt="5"><i class="fas fa-history"></i> Riwayat</button>
-      <button class="menu-btn" data-opt="6"><i class="fas fa-question-circle"></i> FAQ</button>
-    </div>
-
-    <!-- area konten -->
-    <div id="contentArea">
-      <!-- default marketplace -->
-      <div id="marketContent">
-        <div class="product-slider" id="productSlider">
-          <!-- produk-produk akan diisi via js -->
+    <!-- ===== WELCOME OVERLAY ===== -->
+    <div id="welcome-overlay">
+        <div class="welcome-box">
+            <h1>👋 Halo!</h1>
+            <p>Selamat Datang Di <strong>VincentMarket</strong></p>
+            <button class="btn-start" id="btnStart">🚀 Start</button>
         </div>
-        <div class="flex-center" style="margin-top: 6px;">
-          <span style="background: #cfe0ed; padding:6px 20px; border-radius:40px; font-size:0.8rem; color:#1f4a6b;"><i class="fas fa-chevron-left"></i>  geser  <i class="fas fa-chevron-right"></i></span>
+    </div>
+
+    <!-- ===== MAIN APP ===== -->
+    <div id="app">
+
+        <!-- HERO -->
+        <div class="hero-section">
+            <img src="https://postimg.cc/5j8k2kft" alt="Vincent Market Banner" />
+            <h2>🛒 Vincent Market</h2>
+            <div class="sub-text">
+                <i class="fas fa-check-circle"></i> Kenapa Pilih BanditFlow?<br />
+                ⚡ Proses otomatis 1 detik &nbsp;|&nbsp; 🛡️ Server bot aman & stabil<br />
+                💰 Harga murah & terjangkau &nbsp;|&nbsp; 📞 Support fast respon 24 jam
+            </div>
         </div>
-      </div>
-      <div id="otherContent" class="hidden">
-        <!-- konten dinamis untuk menu lain -->
-        <div id="dynamicContent"></div>
-      </div>
-    </div>
-    <div class="footer-note">© VincentMarket • tech automation</div>
-  </div>
 
-  <!-- Modal QRIS -->
-  <div class="modal-overlay" id="qrisModal">
-    <div class="modal-content">
-      <img src="https://www.upload.ee/image/19447703/file.jpg" alt="QRIS" id="qrisImage" onerror="this.src='https://via.placeholder.com/300x300/cccccc/666666?text=QRIS'">
-      <div class="modal-btn-group">
-        <button class="modal-btn" id="downloadQris"><i class="fas fa-download"></i> 📥 Download Qris</button>
-        <button class="modal-btn" id="kirimBukti"><i class="fas fa-paper-plane"></i> 🧾 Kirim Bukti Transfer</button>
-        <button class="modal-btn btn-close-modal" id="closeModalBtn"><i class="fas fa-times"></i> Tutup</button>
-      </div>
-    </div>
-  </div>
-</div>
+        <!-- MENU 6 OPSI -->
+        <div class="menu-grid" id="menuGrid">
+            <button class="menu-btn active" data-target="marketplace"><i class="fas fa-store"></i> MarketPlace</button>
+            <button class="menu-btn" data-target="payment"><i class="fas fa-credit-card"></i> Payment</button>
+            <button class="menu-btn" data-target="sosial"><i class="fas fa-share-alt"></i> Social Media</button>
+            <button class="menu-btn" data-target="testimoni"><i class="fas fa-star"></i> Testimoni</button>
+            <button class="menu-btn" data-target="riwayat"><i class="fas fa-history"></i> Riwayat</button>
+            <button class="menu-btn" data-target="faq"><i class="fas fa-question-circle"></i> FAQ</button>
+        </div>
 
-<script>
-  (function() {
-    // ---------- DATA PRODUK ----------
-    const products = [
-      { name: 'Sewa Bot Jaga Group', price: 'Biasa 7H Rp1.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Biasa 7 Hari', total: 'Rp1000', wa: 'https://wa.me?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1A%20Biasa%207%20Hari%20Total%1A%20Rp1000%20Saya%20lampirkan%20bukti%20transfer' },
-      { name: 'Sewa Bot Jaga Group', price: 'Biasa 1B Rp4.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Biasa 1 Bulan', total: 'Rp4000', wa: 'https://wa.me?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%2A%20Biasa%201%20Bulan%20Total%2A%20Rp4000%20Saya%20lampirkan%20bukti%20transfer' },
-      { name: 'Sewa Bot Jaga Group', price: 'Biasa 4B Rp15.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Biasa 4 Bulan', total: 'Rp15000', wa: 'https://wa.me?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%3A%20Biasa%204%20Bulan%20Total%3A%20Rp15000%20Saya%20lampirkan%20bukti%20transfer' },
-      { name: 'Sewa Bot Jaga Group', price: 'Biasa 6B Rp22.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Biasa 6 Bulan', total: 'Rp22000', wa: 'https://wa.me?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%4A%20Biasa%206%20Bulan%20Total%4A%20Rp22000%20Saya%20lampirkan%20bukti%20transfer' },
-      { name: 'Sewa Bot Jaga Group', price: 'Biasa 1T Rp45.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Biasa 1 Tahun', total: 'Rp45000', wa: 'https://wa.me?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%5A%20Biasa%201%20Tahun%20Total%5A%20Rp45000%20Saya%20lampirkan%20bukti%20transfer' },
-      { name: 'Sewa Bot Jaga Group', price: 'Premium 7H Rp3.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Premium 7 Hari', total: 'Rp3000', wa: 'https://wa.me?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1B%20Premium%207%20Hari%20Total%1B%20Rp3000%20Saya%20lampirkan%20bukti%20transfer' },
-      { name: 'Sewa Bot Jaga Group', price: 'Premium 1B Rp6.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Premium 1 Bulan', total: 'Rp6000', wa: 'https://wa.me?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%2B%20Premium%201%20Bulan%20Total%2B%20Rp6000%20Saya%20lampirkan%20bukti%20transfer' },
-      { name: 'Sewa Bot Jaga Group', price: 'Premium 4B Rp22.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Premium 4 Bulan', total: 'Rp22000', wa: 'https://wa.me?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%3B%20Premium%204%20Bulan%20Total%3B%20Rp22000%20Saya%20lampirkan%20bukti%20transfer' },
-      { name: 'Sewa Bot Jaga Group', price: 'Premium 6B Rp35.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Premium 6 Bulan', total: 'Rp35000', wa: 'https://wa.me?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%4B%20Premium%206%20Bulan%20Total%4B%20Rp35000%20Saya%20lampirkan%20bukti%20transfer' },
-      { name: 'Sewa Bot Jaga Group', price: 'Premium 1T Rp75.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Premium 1 Tahun', total: 'Rp75000', wa: 'https://wa.me?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%5B%20Premium%201%20Tahun%20Total%5B%20Rp75000%20Saya%20lampirkan%20bukti%20transfer' },
-      // Panel Pterodactyle
-      { name: 'Panel Pterodactyle 1GB', price: 'Rp1.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 1GB', total: 'Rp1500', wa: 'https://wa.me/?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%201GB%20Total%1C%20Rp1500%20Saya%20lampirkan%20bukti%20transfer' },
-      { name: 'Panel Pterodactyle 2GB', price: 'Rp2.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 2GB', total: 'Rp2500', wa: 'https://wa.me/?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%2C%20Panel%202GB%20Total%2C%20Rp2500%20Saya%20lampirkan%20bukti%20transfer' },
-      { name: 'Panel Pterodactyle 3GB', price: 'Rp3.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 3GB', total: 'Rp3500', wa: 'https://wa.me/?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%203GB%20Total%1B%20Rp3500%20Saya%20lampirkan%20bukti%20transfer' },
-      { name: 'Panel Pterodactyle 4GB', price: 'Rp4.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 4GB', total: 'Rp4500', wa: 'https://wa.me/?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%204GB%20Total%1B%20Rp4500%20Saya%20lampirkan%20bukti%20transfer' },
-      { name: 'Panel Pterodactyle 5GB', price: 'Rp5.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 5GB', total: 'Rp5500', wa: 'https://wa.me/?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%205GB%20Total%1B%20Rp5500%20Saya%20lampirkan%20bukti%20transfer' },
-      { name: 'Panel Pterodactyle 6GB', price: 'Rp6.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 6GB', total: 'Rp6500', wa: 'https://wa.me/?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%206GB%20Total%1B%20Rp6500%20Saya%20lampirkan%20bukti%20transfer' },
-      { name: 'Panel Pterodactyle 7GB', price: 'Rp7.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 7GB', total: 'Rp7500', wa: 'https://wa.me/?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%207GB%20Total%1B%20Rp7500%20Saya%20lampirkan%20bukti%20transfer' },
-      { name: 'Panel Pterodactyle 8GB', price: 'Rp8.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 8GB', total: 'Rp8000', wa: 'https://wa.me/?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%208GB%20Total%1B%20Rp8000%20Saya%20lampirkan%20bukti%20transfer' },
-      { name: 'Panel Pterodactyle 9GB', price: 'Rp8.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 9GB', total: 'Rp8500', wa: 'https://wa.me/?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%209GB%20Total%1B%20Rp8500%20Saya%20lampirkan%20bukti%20transfer' },
-      { name: 'Panel Pterodactyle 10GB', price: 'Rp9.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 10GB', total: 'Rp9000', wa: 'https://wa.me/?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%2010GB%20Total%1B%20Rp9000%20Saya%20lampirkan%20bukti%20transfer' },
-      { name: 'Panel Pterodactyle Unlimited', price: 'Rp11.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Pane
+        <!-- PANEL KONTEN -->
+        <div class="content-panel" id="contentPanel">
+
+            <!-- ===== MARKETPLACE ===== -->
+            <div id="marketplace" class="panel-content">
+                <h3>📦 MarketPlace</h3>
+                <p class="sub-title">Geser untuk melihat produk ▼</p>
+                <div class="product-slider" id="productSlider"></div>
+                <div class="footer-note" style="margin-top:18px;">
+                    <i class="fas fa-shield-alt"></i> Pembelian Produk Di Vincent Market Di Jamin Aman Dan Mendapatkan Garansi
+                </div>
+            </div>
+
+            <!-- ===== PAYMENT ===== -->
+            <div id="payment" class="panel-content" style="display:none;">
+                <h3>💳 Payment Vincent Market 🏮🍀</h3>
+                <div class="payment-list">
+                    <div class="payment-item"><i class="fas fa-qrcode"></i> <span class="label">Qris</span> <span class="value"><a href="#" onclick="openQrisModal(); return false;">Lihat QRIS</a></span></div>
+                    <div class="payment-item"><i class="fas fa-wallet"></i> <span class="label">Dana</span> <span class="value">081973753505</span></div>
+                    <div class="payment-item"><i class="fas fa-wallet"></i> <span class="label">Gopay</span> <span class="value">081973753505</span></div>
+                    <div class="payment-item"><i class="fas fa-wallet"></i> <span class="label">Ovo</span> <span class="value">081973753505</span></div>
+                </div>
+                <div class="payment-note">
+                    <i class="fas fa-exclamation-triangle"></i> ! Jika Sudah Di Transfer Silahkan Kirim Bukti Transfer
+                </div>
+            </div>
+
+            <!-- ===== SOSIAL MEDIA ===== -->
+            <div id="sosial" class="panel-content" style="display:none;">
+                <h3>🌐 Social Media</h3>
+                <div class="sosial-list">
+                    <div class="sosial-item"><i class="fas fa-headset"></i> Customer Service: <a href="https://wa.me/6285928360811" target="_blank">+62 859-2836-0811</a></div>
+                    <div class="sosial-item"><i class="fab fa-tiktok"></i> Tiktok: <a href="https://tiktok.com/@lightgmaill" target="_blank">@lightgmaill</a></div>
+                    <div class="sosial-item"><i class="fab fa-telegram"></i> Telegram: <a href="https://t.me/Vincentmarketplace" target="_blank">t.me/Vincentmarketplace</a></div>
+                    <div class="sosial-item"><i class="fas fa-envelope"></i> Gmail: hanzzmarket140@gmail.com</div>
+                    <div class="sosial-item"><i class="fab fa-youtube"></i> YouTube: <a href="https://www.youtube.com/@vincent_v1-v6e" target="_blank">@vincent_v1-v6e</a></div>
+                    <div class="sosial-item"><i class="fab fa-whatsapp"></i> Channel WA: <a href="https://whatsapp.com/channel/0029Vb8BSro8PgsFoGnSsm1u" target="_blank">Gabung Channel</a></div>
+                    <div class="sosial-item"><i class="fas fa-users"></i> Group WA: <a href="https://chat.whatsapp.com/FtVqQso1drbI8T7TAMP6sc" target="_blank">Gabung Group</a></div>
+                </div>
+            </div>
+
+            <!-- ===== TESTIMONI ===== -->
+            <div id="testimoni" class="panel-content" style="display:none;">
+                <h3>⭐ Testimoni</h3>
+                <div class="testimoni-item"><strong>Abdul:</strong> Gokil</div>
+                <div class="testimoni-item"><strong>Vinicus:</strong> Pelayanan mantep</div>
+                <div class="testimoni-item"><strong>Rehan:</strong> mantep</div>
+                <div class="testimoni-item"><strong>Hinata:</strong> Gacor Bot Nya Lekk</div>
+            </div>
+
+            <!-- ===== RIWAYAT ===== -->
+            <div id="riwayat" class="panel-content" style="display:none;">
+                <h3>📜 Riwayat Orderan</h3>
+                <div class="riwayat-item">🕒 Anonim - Sewa Bot Jaga Group (Biasa 7 Hari) - Rp 1.000</div>
+                <div class="riwayat-item">🕒 Anonim - Panel Ram 2GB - Rp 2.500</div>
+                <div class="riwayat-item">🕒 Anonim - Script Website V1 - Rp 3.000</div>
+                <div class="riwayat-item">🕒 Anonim - Netflix Premium - Rp 22.000</div>
+                <div class="riwayat-item">🕒 Anonim - Nokos All Negara - Rp 12.000</div>
+                <div class="riwayat-item" style="font-style:italic;color:#6a7a9a;">... dan lainnya</div>
+            </div>
+
+            <!-- ===== FAQ ===== -->
+            <div id="faq" class="panel-content" style="display:none;">
+                <h3>❓ FAQ</h3>
+                <div class="faq-item"><strong>Apa itu Panel Bot?</strong><p>Panel Bot adalah hosting untuk menjalankan bot WhatsApp agar online 24 jam nonstop tanpa harus memakai HP utama.</p></div>
+                <div class="faq-item"><strong>Apa itu Bot WhatsApp?</strong><p>Bot WhatsApp adalah program otomatis yang dapat membalas pesan, menjalankan perintah, membuat fitur grup, dan membantu aktivitas WhatsApp secara otomatis.</p></div>
+                <div class="faq-item"><strong>Kapan panel aktif?</strong><p>Panel akan aktif otomatis dalam 1–3 detik setelah pembayaran berhasil.</p></div>
+                <div class="faq-item"><strong>Apakah Panel Bergaransi?</strong><p>Ya, garansi berlaku selama 1 bulan, selama server tetap aktif dan tidak melanggar ketentuan yang berlaku.</p></div>
+            </div>
+
+        </div><!-- end content-panel -->
+
+    </div><!-- end app -->
+
+    <!-- ===== MODAL QRIS ===== -->
+    <div class="modal-qris" id="modalQris">
+        <div class="modal-qris-content">
+            <h3 style="margin-bottom:12px;color:#1a2a6a;">💳 QRIS</h3>
+            <img src="https://www.upload.ee/image/19447703/file.jpg" alt="QRIS" />
+            <div class="btn-group">
+                <button class="btn-download" onclick="downloadQris()"><i class="fas fa-download"></i> 📥 Download Qris</button>
+                <button class="btn-wa" onclick="kirimWa()"><i class="fab fa-whatsapp"></i> 🧾 Kirim Bukti Transfer</button>
+                <button class="btn-tutup" onclick="closeQris()"><i class="fas fa-times"></i> Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // DATA PRODUK (MarketPlace)
+        // ============================================================
+        const produkData = [{
+            id: 'sewa_bot_biasa',
+            nama: 'Sewa Bot Jaga Group (Biasa)',
+            harga: 'Rp 1.000',
+            img: 'https://postimg.cc/B8hB6rdQ',
+            paket: 'Biasa 7 Hari',
+            total: 'Rp1000'
+        }, {
+            id: 'sewa_bot_biasa_1bln',
+            nama: 'Sewa Bot Jaga Group (Biasa)',
+            harga: 'Rp 4.000',
+            img: 'https://postimg.cc/B8hB6rdQ',
+            paket: 'Biasa 1 Bulan',
+            total: 'Rp4000'
+        }, {
+            id: 'sewa_bot_biasa_4bln',
+            nama: 'Sewa Bot Jaga Group (Biasa)',
+            harga: 'Rp 15.000',
+            img: 'https://postimg.cc/B8hB6rdQ',
+            paket: 'Biasa 4 Bulan',
+            total: 'Rp15000'
+        }, {
+            id: 'sewa_bot_biasa_6bln',
+            nama: 'Sewa Bot Jaga Group (Biasa)',
+            harga: 'Rp 22.000',
+            img: 'https://postimg.cc/B8hB6rdQ',
+            paket: 'Biasa 6 Bulan',
+            total: 'Rp22000'
+        }, {
+            id: 'sewa_bot_biasa_1thn',
+            nama: 'Sewa Bot Jaga Group (Biasa)',
+            harga: 'Rp 45.000',
+            img: 'https://postimg.cc/B8hB6rdQ',
+            paket: 'Biasa 1 Tahun',
+            total: 'Rp45000'
+        }, {
+            id: 'sewa_bot_premium_7hari',
+            nama: 'Sewa Bot Jaga Group (Premium)',
+            harga: 'Rp 3.000',
+            img: 'https://postimg.cc/B8hB6rdQ',
+            paket: 'Premium 7 Hari',
+            total: 'Rp3000'
+        }, {
+            id: 'sewa_bot_premium_1bln',
+            nama: 'Sewa Bot Jaga Group (Premium)',
+            harga: 'Rp 6.000',
+            img: 'https://postimg.cc/B8hB6rdQ',
+            paket: 'Premium 1 Bulan',
+            total: 'Rp6000'
+        }, {
+            id: 'sewa_bot_premium_4bln',
+            nama: 'Sewa Bot Jaga Group (Premium)',
+            harga: 'Rp 22.000',
+            img: 'https://postimg.cc/B8hB6rdQ',
+            paket: 'Premium 4 Bulan',
+            total: 'Rp22000'
+        }, {
+            id: 'sewa_bot_premium_6bln',
+            nama: 'Sewa Bot Jaga Group (Premium)',
+            harga: 'Rp 35.000',
+            img: 'https://postimg.cc/B8hB6rdQ',
+            paket: 'Premium 6 Bulan',
+            total: 'Rp35000'
+        }, {
+            id: 'sewa_bot_premium_1thn',
+            nama: 'Sewa Bot Jaga Group (Premium)',
+            harga: 'Rp 75.000',
+            img: 'https://postimg.cc/B8hB6rdQ',
+            paket: 'Premium 1 Tahun',
+            total: 'Rp75000'
+        }, {
+            id: 'panel_1gb',
+            nama: 'Panel Pterodactyle 1GB',
+            harga: 'Rp 1.500',
+            img: 'https://postimg.cc/B8hB6rdQ',
+            paket: 'Panel 1GB',
+            total: 'Rp1500'
+        }, {
+            id: 'panel_2gb',
+            nama: 'Panel Pterodactyle 2GB',
+            harga: 'Rp 2.500',
+            img: 'https://postimg.cc/B8hB6rdQ',
+            paket: 'Panel 2GB',
+            total: 'Rp2500'
+        }, {
+            id: 'panel_3gb',
+            nama: 'Panel Pterodactyle 3GB',
+            harga: 'Rp 3.500',
+            img: 'https://postimg.cc/B8hB6rdQ',
+            paket: 'Panel 3GB',
+            total: 'Rp3500'
+        }, {
+            id: 'panel_4gb',
+            nama: 'Panel Pterodactyle 4GB',
+            harga: 'Rp 4.500',
+            img: 'https://postimg.cc/B8hB6rdQ',
+            paket: 'Panel 4GB',
+            total: 'Rp4500'
+        }, {
+            id: 'panel_5gb',
+            nama: 'Panel Pterodactyle 5GB',
+            harga: 'Rp 5.500',
+            img: 'https://postimg.cc/B8hB6rdQ',
+            paket: 'Panel 5GB',
+            total: 'Rp5500'
+        }, {
+            id: 'panel_6gb',
+            nama: 'Panel Pterodactyle 6GB',
+            harga: 'Rp 6.500',
+            img: 'https://postimg.cc/B8hB6rdQ',
+            paket: 'Panel 6GB',
+            total: 'Rp6500'
+        }, {
+            id: 'panel_7gb',
+            nama: 'Panel Pterodactyle 7GB',
+            harga: 'Rp 7.500',
+            img: 'https://postimg.cc/B8hB6rdQ',
+            paket: 'Panel 7GB',
+            total: 'Rp7500'
+        }, {
+            id: 'panel_8gb',
+            nama: 'Panel Pterodactyle 8GB',
+            harga: 'Rp 8.000',
+            img: 'https://postimg.cc/B8hB6rdQ',
+            paket: 'Panel 8GB',
+            total: 'Rp8000'
+        }, {
+            id: 'panel_9gb',
+            nama: 'Panel Pterodactyle 9GB',
+            harga: 'Rp 8.500',
+            img: 'https://postimg.cc/B8hB6rdQ',
+            paket: 'Panel 9GB',
+            total: 'Rp8500'
+        }, {
+            id: 'panel_10gb',
+            nama: 'Panel Pterodactyle 10GB',
+            harga: 'Rp 9.000',
+            img: 'https://postimg.cc/B8hB6rdQ',
+            paket: 'Panel 10GB',
+            total: 'Rp9000'
+        }, {
+            id: 'panel_unlimited',
+            nama: 'Panel Pterodactyle Unlimited',
+            harga: 'Rp 11.000',
+            img: 'https://postimg.cc/B8hB6rdQ',
+            paket: 'Panel Unlimited',
+            total: 'Rp11000'
+        }, {
+            id: 'script_v1',
+            nama: 'Script Website Jualan V1',
+            harga: 'Rp 3.000',
+            img: 'https://postimg.cc/sQmBsBk7',
+            paket: 'Script Website V1',
+            total: 'Rp3000'
+        }, {
+            id: 'script_v2',
+            nama: 'Script Website Jualan V2',
+            harga: 'Rp 7.000',
+            img: 'https://postimg.cc/sG2MXjzT',
+            paket: 'Script Website V2',
+            total: 'Rp7000'
+        }, {
+            id: 'script_v3',
+            nama: 'Script Website Jualan V3',
+            harga: 'Rp 7.000',
+            img: 'https://postimg.cc/XZ3dW0r2',
+            paket: 'Script Website V3',
+            total: 'Rp7000'
+        }, {
+            id: 'script_v4',
+            nama: 'Script Website Jualan V4',
+            harga: 'Rp 11.000',
+            img: 'https://postimg.cc/vD8gXznD',
+            paket: 'Script Website V4',
+            total: 'Rp11000'
+        }, {
+            id: 'bot_pushkontak',
+            nama: 'Script Bot Wa - Pushkontak 1.0',
+            harga: 'Rp 7.000',
+            img: 'https://postimg.cc/dLL7cV40',
+            paket: 'Bot Pushkontak 1.0',
+            total: 'Rp7000'
+        }, {
+            id: 'bot_jaga_grup',
+            nama: 'Script Bot Wa - Jaga Grup 1.0',
+            harga: 'Rp 7.000',
+            img: 'https://postimg.cc/Bth8zK52',
+            paket: 'Bot Jaga Grup 1.0',
+            total: 'Rp7000'
+        }, {
+            id: 'bot_multi_1_1',
+            nama: 'Script Bot Wa Multi Device 1.1',
+            harga: 'Rp 20.000',
+            img: 'https://postimg.cc/1gZ4FcPD',
+            paket: 'Bot Multi Device 1.1',
+            total: 'Rp20000'
+        }, {
+            id: 'bot_multi_2_0',
+            nama: 'Script Bot Wa Multi Device 2.0',
+            harga: 'Rp 17.000',
+            img: 'https://postimg.cc/4KTncbZG',
+            paket: 'Bot Multi Device 2.0',
+            total: 'Rp17000'
+        }, {
+            id: 'bot_store',
+            nama: 'Script Bot Wa Store 1.0',
+            harga: 'Rp 17.000',
+            img: 'https://postimg.cc/9RLfs69C',
+            paket: 'Bot Store 1.0',
+            total: 'Rp17000'
+        }, {
+            id: 'bot_cpanel',
+            nama: 'Script Bot Wa Cpanel 1.0',
+            harga: 'Rp 12.000',
+            img: 'https://postimg.cc/Hc6LFqM7',
+            paket: 'Bot Cpanel 1.0',
+            total: 'Rp12000'
+        }, {
+            id: 'bot_jpm',
+            nama: 'Script Bot Wa Jpm 1.0',
+            harga: 'Rp 12.000',
+            img: 'https://postimg.cc/D8qykY7T',
+            paket: 'Bot Jpm 1.0',
+            total: 'Rp12000'
+        }, {
+            id: 'netflix',
+            nama: 'Netflix Premium',
+            harga: 'Rp 22.000',
+            img: 'https://postimg.cc/YLRnQH12',
+            paket: 'Netflix Premium',
+            total: 'Rp22000'
+        }, {
+            id: 'canva',
+            nama: 'Canva Premium',
+            harga: 'Rp 11.000',
+            img: 'https://postimg.cc/8JhnPWcb',
+            paket: 'Canva Premium',
+            total: 'Rp11000'
+        }, {
+            id: 'capcut',
+            nama: 'Capcut Premium',
+            harga: 'Rp 47.000',
+            img: 'https://postimg.cc/7GvWkXxR',
+            paket: 'Capcut Premium',
+            total: 'Rp47000'
+        }, {
+            id: 'spotify',
+            nama: 'Spotify Premium',
+            harga: 'Rp 26.000',
+            img: 'https://postimg.cc/9zdvW3wP',
+            paket: 'Spotify Premium',
+            total: 'Rp26000'
+        }, {
+            id: 'nokos',
+            nama: 'Nokos All Negara',
+            harga: 'Rp 12.000',
+            img: 'https://postimg.cc/yDbGfs2d',
+            paket: 'Nokos All Negara',
+            total: 'Rp12000'
+        }];
+
+        // ============================================================
+        // RENDER PRODUK
+        // ============================================================
+        function renderProduk() {
+            const slider = document.getElementById('productSlider');
+            slider.innerHTML = '';
+            produkData.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <img src="${p.img}" alt="${p.nama}" onerror="this.src='https://placehold.co/400x200/1a2a6a/fff?text=VincentMarket'" />
+                    <div class="name">${p.nama}</div>
+                    <div class="price">${p.harga}</div>
+                    <button class="btn-pilih" data-paket="${p.paket}" data-total="${p.total}"><i class="fas fa-shopping-cart"></i> Pilih Paket</button>
+                `;
+                slider.appendChild(card);
+            });
+
+            // Event listener untuk tombol pilih paket
+            document.querySelectorAll('.btn-pilih').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const paket = this.dataset.paket;
+                    const total = this.dataset.total;
+                    openQrisModal(paket, total);
+                });
+            });
+        }
+
+        // ============================================================
+        // MODAL QRIS
+        // ============================================================
+        let selectedPaket = '';
+        let selectedTotal = '';
+
+        function openQrisModal(paket = 'Paket', total = 'Rp0') {
+            selectedPaket = paket;
+            selectedTotal = total;
+            document.getElementById('modalQris').classList.add('open');
+        }
+
+        function closeQris() {
+            document.getElementById('modalQris').classList.remove('open');
+        }
+
+        function downloadQris() {
+            const link = document.createElement('a');
+            link.href = 'https://www.upload.ee/image/19447703/file.jpg';
+            link.download = 'qris_vincentmarket.jpg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function kirimWa() {
+            const msg = `Halo Admin, saya sudah bayar. Paket: ${selectedPaket} Total: ${selectedTotal} Saya lampirkan bukti transfer`;
+            const url = `https://wa.me?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+        }
+
+        // ============================================================
+        // MENU NAVIGASI
+        // ============================================================
+        const menuBtns = document.querySelectorAll('.menu-btn');
+        const panels = {
+            marketplace: document.getElementById('marketplace'),
+            payment: document.getElementById('payment'),
+            sosial: document.getElementById('sosial'),
+            testimoni: document.getElementById('testimoni'),
+            riwayat: document.getElementById('riwayat'),
+            faq: document.getElementById('faq'),
+        };
+
+        menuBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                menuBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                const target = this.dataset.target;
+                Object.keys(panels).forEach(key => {
+                    panels[key].style.display = (key === target) ? 'block' : 'none';
+                });
+            });
+        });
+
+        // ============================================================
+        // LOADING -> WELCOME -> APP
+        // ============================================================
+        window.addEventListener('DOMContentLoaded', function() {
+            // render produk
+            renderProduk();
+
+            // Loading 2 detik
+            setTimeout(() => {
+                document.getElementById('loading-screen').classList.add('hide');
+                // Tampilkan welcome
+                document.getElementById('welcome-overlay').classList.add('show');
+            }, 2000);
+
+            // Tombol Start
+            document.getElementById('btnStart').addEventListener('click', function() {
+                document.getElementById('welcome-overlay').classList.remove('show');
+                document.getElementById('app').classList.add('active');
+                // Putar lagu Spotify (iframe embed)
+                playMusic();
+            });
+        });
+
+        // ============================================================
+        // MUSIC (Spotify Embed) - diputar saat website dibuka
+        // ============================================================
+        let musicPlayer = null;
+
+        function playMusic() {
+            if (musicPlayer) return;
+            // Buat iframe Spotify embed (autoplay)
+            const iframe = document.createElement('iframe');
+            iframe.style.position = 'fixed';
+            iframe.style.bottom = '10px';
+            iframe.style.right = '10px';
+            iframe.style.width = '300px';
+            iframe.style.height = '80px';
+            iframe.style.border = 'none';
+            iframe.style.borderRadius = '12px';
+            iframe.style.zIndex = '9999';
+            iframe.style.boxShadow = '0 4px 20px rgba(0,0,0,0.2)';
+            // Gunakan embed spotify dengan autoplay
+            iframe.src = 'https://open.spotify.com/embed/track/3ZwqWrRpylU9nfy99qwKdR?utm_source=generator&autoplay=1';
+            iframe.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+            iframe.loading = 'lazy';
+            document.body.appendChild(iframe);
+            musicPlayer = iframe;
+
+            // Coba putar dengan cara lain jika iframe tidak autoplay
+            setTimeout(() => {
+                try {
+                    // Fallback: buka link di tab baru (opsional)
+                    // window.open('https://open.spotify.com/track/3ZwqWrRpylU9nfy99qwKdR?si=hoeNdQzuQCqWW7TgiAHYdg', '_blank');
+                } catch (e) {}
+            }, 1000);
+        }
+
+        // ============================================================
+        // CLOSE MODAL SAAT KLIK DI LUAR
+        // ============================================================
+        document.getElementById('modalQris').addEventListener('click', function(e) {
+            if (e.target === this) closeQris();
+        });
+
+        console.log('🚀 VincentMarket siap!');
+    </script>
+
+</body>
+</html
+  
