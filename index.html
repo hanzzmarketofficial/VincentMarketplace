@@ -1,842 +1,576 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>VincentMarket</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #e8eeff 0%, #f5f9ff 50%, #ffffff 100%);
-            min-height: 100vh;
-            transition: all 0.3s;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Vincent Market</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      scroll-behavior: smooth;
+    }
+    body {
+      background: linear-gradient(145deg, #e3f0fa 0%, #b8d4e8 100%);
+      min-height: 100vh;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .app {
+      max-width: 480px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 48px 48px 32px 32px;
+      box-shadow: 0 25px 50px -10px rgba(0, 20, 40, 0.3);
+      padding: 20px 18px 30px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      transition: all 0.2s ease;
+    }
+    /* loading & splash */
+    .splash {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 500px;
+      gap: 20px;
+      text-align: center;
+    }
+    .loader {
+      width: 70px;
+      height: 70px;
+      border: 6px solid rgba(0, 40, 80, 0.1);
+      border-top: 6px solid #0a2a44;
+      border-radius: 50%;
+      animation: spin 1s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+      box-shadow: 0 0 0 4px rgba(10, 42, 68, 0.08);
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .splash h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #0a2a44;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #0a2a44, #1e5a7a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 2px 10px rgba(0,60,120,0.15);
+    }
+    .splash .sub {
+      color: #1e3b5a;
+      font-weight: 500;
+      background: rgba(255,255,255,0.5);
+      padding: 6px 18px;
+      border-radius: 40px;
+      backdrop-filter: blur(4px);
+    }
+    .btn-start {
+      background: #0a2a44;
+      color: white;
+      border: none;
+      padding: 14px 44px;
+      border-radius: 60px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      box-shadow: 0 12px 24px -8px rgba(10, 42, 68, 0.4);
+      transition: 0.2s;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      margin-top: 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .btn-start:active { transform: scale(0.95); background: #123b5e; }
+    .hidden { display: none !important; }
 
-        /* LOADING */
-        #loading-screen {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            background: linear-gradient(145deg, #dce4ff, #f0f6ff);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.8s ease;
-        }
-        #loading-screen.hide {
-            opacity: 0;
-            pointer-events: none;
-        }
-        .loader-ring {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            border: 6px solid #c0d0ff;
-            border-top-color: #1a2a6a;
-            animation: spin 0.9s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        .loading-text {
-            margin-top: 25px;
-            font-weight: 700;
-            font-size: 1.3rem;
-            color: #1a2a6a;
-            letter-spacing: 2px;
-        }
-        .loading-sub {
-            color: #4a5a9a;
-            font-weight: 400;
-            margin-top: 6px;
-            font-size: 0.9rem;
-        }
+    /* main content */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .hero-card {
+      background: white;
+      border-radius: 32px;
+      padding: 18px 16px 14px;
+      box-shadow: 0 8px 24px rgba(0, 20, 40, 0.08);
+      border: 1px solid rgba(255,255,255,0.7);
+      backdrop-filter: blur(4px);
+    }
+    .hero-card img {
+      width: 100%;
+      border-radius: 24px;
+      max-height: 200px;
+      object-fit: cover;
+      border: 1px solid #e9f0f5;
+    }
+    .hero-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #0a2a44;
+      margin: 10px 0 4px;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hero-title span { background: #0a2a44; color: white; padding: 0 12px; border-radius: 40px; font-size: 0.8rem; }
+    .hero-desc {
+      background: #eef6fc;
+      padding: 12px 14px;
+      border-radius: 20px;
+      margin: 6px 0 8px;
+      font-size: 0.9rem;
+      color: #0a2a44;
+      border-left: 4px solid #0a2a44;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px 8px;
+    }
+    .hero-desc i { font-style: normal; background: rgba(10,42,68,0.05); padding: 2px 8px; border-radius: 20px; }
 
-        /* WELCOME */
-        #welcome-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 9998;
-            background: rgba(10, 20, 50, 0.8);
-            backdrop-filter: blur(12px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
-        #welcome-overlay.show {
-            display: flex;
-        }
-        .welcome-box {
-            background: linear-gradient(145deg, #ffffff, #f0f5ff);
-            padding: 40px 50px;
-            border-radius: 40px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            max-width: 520px;
-            width: 90%;
-            transform: scale(0.9);
-            animation: popIn 0.5s ease forwards;
-        }
-        @keyframes popIn {
-            to { transform: scale(1); }
-        }
-        .welcome-box h1 {
-            font-size: 2.4rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #1a2a6a, #3a5aaa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-        }
-        .welcome-box p {
-            color: #334;
-            font-weight: 500;
-            margin-bottom: 25px;
-            font-size: 1rem;
-        }
-        .btn-start {
-            background: linear-gradient(135deg, #1a2a6a, #3a5aaa);
-            border: none;
-            padding: 14px 44px;
-            border-radius: 60px;
-            color: #fff;
-            font-weight: 700;
-            font-size: 1.1rem;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(26, 42, 106, 0.3);
-            transition: 0.25s;
-        }
-        .btn-start:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 28px rgba(26, 42, 106, 0.5);
-        }
+    /* opsi menu */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 10px 0 12px;
+    }
+    .menu-btn {
+      background: white;
+      border: none;
+      padding: 14px 0;
+      border-radius: 30px;
+      font-weight: 600;
+      color: #0a2a44;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.02);
+      transition: 0.15s;
+      border: 1px solid rgba(10,42,68,0.08);
+      font-size: 0.8rem;
+      backdrop-filter: blur(4px);
+      background: rgba(255,255,255,0.7);
+    }
+    .menu-btn:active { background: #0a2a44; color: white; transform: scale(0.94); }
 
-        /* APP */
-        #app {
-            display: none;
-            padding: 20px 16px 100px;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        #app.active {
-            display: block;
-        }
+    /* konten dinamis */
+    .content-panel {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(8px);
+      border-radius: 32px;
+      padding: 16px 12px;
+      border: 1px solid rgba(255,255,255,0.5);
+      box-shadow: 0 8px 20px rgba(0, 20, 40, 0.06);
+    }
+    .carousel {
+      display: flex;
+      overflow-x: auto;
+      gap: 18px;
+      padding: 8px 4px 18px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .carousel::-webkit-scrollbar { height: 4px; }
+    .carousel::-webkit-scrollbar-thumb { background: #0a2a44; border-radius: 20px; }
+    .product-card {
+      min-width: 220px;
+      background: white;
+      border-radius: 30px;
+      padding: 14px 14px 18px;
+      scroll-snap-align: start;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.02);
+      border: 1px solid #eaf1f7;
+      flex-shrink: 0;
+    }
+    .product-card img {
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+      border-radius: 20px;
+      background: #d9e4ed;
+    }
+    .product-card h4 { font-size: 1rem; margin: 8px 0 2px; color: #0a2a44; }
+    .product-card .price { font-weight: 700; color: #1b4a6b; }
+    .btn-pilih {
+      background: #a4161a;
+      color: white;
+      border: none;
+      padding: 8px 0;
+      width: 100%;
+      border-radius: 60px;
+      font-weight: 600;
+      margin-top: 10px;
+      box-shadow: 0 4px 8px rgba(164, 22, 26, 0.3);
+      transition: 0.1s;
+      font-size: 0.8rem;
+    }
+    .btn-pilih:active { background: #6d0e11; transform: scale(0.96); }
 
-        /* HERO */
-        .hero-section {
-            background: linear-gradient(145deg, #ffffff, #f5f9ff);
-            border-radius: 32px;
-            padding: 20px 20px 30px;
-            margin-bottom: 28px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
-            text-align: center;
-            border: 1px solid rgba(26, 42, 106, 0.08);
-        }
-        .hero-section img {
-            width: 100%;
-            max-height: 220px;
-            object-fit: cover;
-            border-radius: 20px;
-            margin-bottom: 16px;
-            border: 1px solid #e0e8f0;
-        }
-        .hero-section h2 {
-            font-size: 2.2rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #1a2a6a, #4a6aaa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
-        }
-        .hero-section .sub-text {
-            background: #eef4ff;
-            padding: 14px 18px;
-            border-radius: 16px;
-            margin-top: 14px;
-            font-weight: 600;
-            color: #1a2a5a;
-            line-height: 1.8;
-            font-size: 0.95rem;
-        }
-        .hero-section .sub-text i {
-            color: #2a4a8a;
-            margin-right: 6px;
-        }
+    /* modal qris */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: 20px;
+    }
+    .modal-box {
+      max-width: 380px;
+      width: 100%;
+      background: white;
+      border-radius: 40px;
+      padding: 24px 18px 28px;
+      text-align: center;
+      box-shadow: 0 40px 60px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .modal-box img { width: 100%; max-height: 240px; object-fit: contain; border-radius: 24px; background: #f0f6fc; }
+    .modal-btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .modal-btn {
+      background: #1a1a2e;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+      transition: 0.1s;
+    }
+    .modal-btn:active { opacity: 0.7; transform: scale(0.96); }
+    .modal-btn.tutup { background: #3a3a4a; }
+    .modal-btn.kirim { background: #a4161a; }
 
-        /* MENU */
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 12px;
-            margin: 20px 0 28px;
-        }
-        .menu-btn {
-            background: #fff;
-            border: none;
-            padding: 14px 6px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            color: #1a2a5a;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
-            transition: 0.2s;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            border: 1px solid rgba(26, 42, 106, 0.08);
-        }
-        .menu-btn i {
-            font-size: 1.1rem;
-            color: #2a4a8a;
-        }
-        .menu-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 22px rgba(26, 42, 106, 0.15);
-            background: #f5f9ff;
-        }
-        .menu-btn.active {
-            background: #1a2a6a;
-            color: #fff;
-        }
-        .menu-btn.active i {
-            color: #fff;
-        }
-
-        /* CONTENT */
-        .content-panel {
-            background: #fff;
-            border-radius: 28px;
-            padding: 24px 18px;
-            box-shadow: 0 6px 28px rgba(0, 0, 0, 0.04);
-            min-height: 260px;
-            border: 1px solid rgba(26, 42, 106, 0.06);
-        }
-        .content-panel h3 {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #1a2a6a;
-            margin-bottom: 12px;
-        }
-        .content-panel .sub-title {
-            color: #4a5a7a;
-            font-weight: 500;
-            margin-bottom: 18px;
-        }
-
-        /* PRODUCT SLIDER */
-        .product-slider {
-            display: flex;
-            gap: 16px;
-            overflow-x: auto;
-            padding: 8px 4px 16px;
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-        }
-        .product-slider::-webkit-scrollbar {
-            height: 6px;
-        }
-        .product-slider::-webkit-scrollbar-track {
-            background: #e8edf8;
-            border-radius: 10px;
-        }
-        .product-slider::-webkit-scrollbar-thumb {
-            background: #2a4a8a;
-            border-radius: 10px;
-        }
-
-        .product-card {
-            min-width: 230px;
-            max-width: 250px;
-            background: #f8fbff;
-            border-radius: 24px;
-            padding: 14px 14px 18px;
-            scroll-snap-align: start;
-            border: 1px solid #e8efff;
-            flex-shrink: 0;
-            transition: 0.2s;
-        }
-        .product-card:hover {
-            transform: scale(1.02);
-            border-color: #1a2a6a;
-            box-shadow: 0 8px 24px rgba(26,42,106,0.12);
-        }
-        .product-card img {
-            width: 100%;
-            height: 140px;
-            object-fit: cover;
-            border-radius: 16px;
-            margin-bottom: 10px;
-            background: #dde4f0;
-            border: 1px solid #e0e8f0;
-        }
-        .product-card .name {
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: #1a2a5a;
-            margin-bottom: 4px;
-            min-height: 42px;
-        }
-        .product-card .price {
-            font-weight: 700;
-            color: #1a2a6a;
-            font-size: 1rem;
-        }
-        .btn-pilih {
-            background: #a02030;
-            border: none;
-            color: #fff;
-            font-weight: 700;
-            padding: 10px 14px;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: 0.2s;
-            width: 100%;
-        }
-        .btn-pilih:hover {
-            background: #7a1825;
-            transform: scale(1.02);
-        }
-        .btn-pilih i {
-            margin-right: 5px;
-        }
-
-        /* MODAL QRIS */
-        .modal-qris {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.65);
-            backdrop-filter: blur(6px);
-            z-index: 99999;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .modal-qris.open {
-            display: flex;
-        }
-        .modal-qris-content {
-            background: #fff;
-            border-radius: 32px;
-            max-width: 420px;
-            width: 100%;
-            padding: 28px 20px 22px;
-            text-align: center;
-            position: relative;
-            animation: popIn 0.3s ease;
-        }
-        .modal-qris-content h3 {
-            color: #1a2a6a;
-            margin-bottom: 12px;
-        }
-        .modal-qris-content img {
-            width: 100%;
-            max-height: 360px;
-            object-fit: contain;
-            border-radius: 16px;
-            background: #f5f8ff;
-            padding: 10px;
-            border: 1px solid #e0e8f0;
-        }
-        .modal-qris-content .btn-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 16px;
-        }
-        .modal-qris-content .btn-group button {
-            border: none;
-            padding: 12px;
-            border-radius: 40px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: 0.2s;
-            background: #1a1a2e;
-            color: #fff;
-        }
-        .modal-qris-content .btn-group button:hover {
-            transform: scale(1.02);
-            opacity: 0.9;
-        }
-        .modal-qris-content .btn-group .btn-tutup {
-            background: #3a3a4e;
-        }
-        .modal-qris-content .btn-group .btn-download {
-            background: #1a2a6a;
-        }
-        .modal-qris-content .btn-group .btn-wa {
-            background: #25a55a;
-        }
-
-        /* PAYMENT */
-        .payment-list {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            margin-top: 12px;
-        }
-        .payment-item {
-            background: #f5f9ff;
-            padding: 14px 18px;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            font-weight: 600;
-            color: #1a2a5a;
-            border: 1px solid #e0e8f8;
-        }
-        .payment-item i {
-            font-size: 1.6rem;
-            width: 32px;
-            color: #1a2a6a;
-        }
-        .payment-item .label {
-            flex: 1;
-        }
-        .payment-item .value {
-            font-weight: 400;
-            color: #2a3a6a;
-        }
-        .payment-item .value a {
-            color: #1a2a6a;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-        .payment-note {
-            margin-top: 16px;
-            background: #fff3e0;
-            padding: 14px;
-            border-radius: 16px;
-            font-weight: 600;
-            color: #7a3a1a;
-            border-left: 4px solid #e67a2a;
-        }
-
-        /* SOSIAL */
-        .sosial-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .sosial-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 12px 16px;
-            background: #f5f9ff;
-            border-radius: 16px;
-            font-weight: 600;
-            color: #1a2a5a;
-            border: 1px solid #e0e8f8;
-        }
-        .sosial-item i {
-            font-size: 1.4rem;
-            width: 32px;
-            color: #1a2a6a;
-        }
-        .sosial-item a {
-            color: #1a2a6a;
-            text-decoration: none;
-            font-weight: 500;
-            word-break: break-all;
-        }
-        .sosial-item a:hover {
-            text-decoration: underline;
-        }
-
-        /* TESTIMONI */
-        .testimoni-item {
-            background: #f5f9ff;
-            padding: 14px 18px;
-            border-radius: 18px;
-            margin-bottom: 10px;
-            border-left: 4px solid #2a4a8a;
-        }
-        .testimoni-item strong {
-            color: #1a2a6a;
-        }
-
-        /* RIWAYAT */
-        .riwayat-item {
-            background: #f5f9ff;
-            padding: 12px 16px;
-            border-radius: 14px;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #1a2a5a;
-            border: 1px solid #e0e8f8;
-        }
-
-        /* FAQ */
-        .faq-item {
-            background: #f5f9ff;
-            padding: 14px 18px;
-            border-radius: 16px;
-            margin-bottom: 10px;
-            border: 1px solid #e0e8f8;
-        }
-        .faq-item strong {
-            display: block;
-            color: #1a2a6a;
-            margin-bottom: 4px;
-        }
-        .faq-item p {
-            color: #2a3a5a;
-            font-weight: 400;
-        }
-
-        .footer-note {
-            margin-top: 30px;
-            text-align: center;
-            font-weight: 600;
-            color: #1a2a5a;
-            background: #e8efff;
-            padding: 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
-        .footer-note i {
-            color: #c0392b;
-        }
-
-        /* MUSIC PLAYER */
-        #music-player {
-            position: fixed;
-            bottom: 12px;
-            right: 12px;
-            z-index: 9997;
-            background: rgba(255,255,255,0.95);
-            border-radius: 16px;
-            padding: 6px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            border: 1px solid #e0e8f0;
-        }
-        #music-player iframe {
-            border-radius: 12px;
-            border: none;
-            width: 280px;
-            height: 80px;
-        }
-
-        @media (max-width: 480px) {
-            .welcome-box { padding: 30px 20px; }
-            .welcome-box h1 { font-size: 1.8rem; }
-            .hero-section h2 { font-size: 1.6rem; }
-            .menu-grid { grid-template-columns: repeat(3, 1fr); }
-            .product-card { min-width: 170px; }
-            #music-player iframe { width: 200px; height: 70px; }
-        }
-    </style>
+    .payment-list {
+      background: #f2f8fe;
+      padding: 12px 16px;
+      border-radius: 24px;
+      margin: 8px 0;
+      font-size: 0.95rem;
+    }
+    .payment-list strong { color: #0a2a44; }
+    .testi-item { background: white; padding: 8px 14px; border-radius: 40px; margin: 5px 0; border-left: 4px solid #0a2a44; }
+    .faq-item { background: #eaf2f9; padding: 10px 16px; border-radius: 20px; margin: 6px 0; }
+    .riwayat-item { background: white; padding: 8px 14px; border-radius: 20px; margin: 4px 0; font-size: 0.9rem; }
+    .footer-note { margin-top: 16px; text-align: center; font-weight: 500; color: #0a2a44; background: rgba(255,255,255,0.5); padding: 8px; border-radius: 40px; backdrop-filter: blur(4px); }
+  </style>
 </head>
 <body>
+<div class="app" id="app">
+  <!-- SPLASH -->
+  <div id="splash" class="splash">
+    <div class="loader"></div>
+    <h1>Halo Selamat Datang</h1>
+    <div class="sub">VincentMarket</div>
+    <button class="btn-start" id="btnStart">▶ Start</button>
+  </div>
 
-    <!-- LOADING -->
-    <div id="loading-screen">
-        <div class="loader-ring"></div>
-        <div class="loading-text">⏳ Loading...</div>
-        <div class="loading-sub">VincentMarket</div>
+  <!-- MAIN -->
+  <div id="mainContent" class="main-content hidden">
+    <!-- hero -->
+    <div class="hero-card">
+      <img src="https://postimg.cc/5j8k2kft" alt="Vincent Market" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22/%3E'">
+      <div class="hero-title">Vincent Market <span>⚡</span></div>
+      <div class="hero-desc">
+        <span>⚡ Proses otomatis 1 detik</span>
+        <span>🛡️ Server bot aman & stabil</span>
+        <span>💰 Harga murah & terjangkau</span>
+        <span>📞 Support fast respon 24 jam</span>
+      </div>
     </div>
 
-    <!-- WELCOME -->
-    <div id="welcome-overlay">
-        <div class="welcome-box">
-            <h1>👋 Halo!</h1>
-            <p>Selamat Datang Di <strong>VincentMarket</strong></p>
-            <button class="btn-start" id="btnStart">🚀 Start</button>
-        </div>
+    <!-- menu opsi 6 -->
+    <div class="menu-grid" id="menuGrid">
+      <button class="menu-btn" data-opt="1">🛒 MarketPlace</button>
+      <button class="menu-btn" data-opt="2">💳 Payment</button>
+      <button class="menu-btn" data-opt="3">📱 Social Media</button>
+      <button class="menu-btn" data-opt="4">⭐ Testimoni</button>
+      <button class="menu-btn" data-opt="5">📜 Riwayat</button>
+      <button class="menu-btn" data-opt="6">❓ FAQ</button>
     </div>
 
-    <!-- APP -->
-    <div id="app">
-
-        <!-- HERO -->
-        <div class="hero-section">
-            <img src="https://i.postimg.cc/5j8k2kft/image.jpg" alt="Vincent Market" onerror="this.src='https://placehold.co/800x300/1a2a6a/fff?text=Vincent+Market'" />
-            <h2>🛒 Vincent Market</h2>
-            <div class="sub-text">
-                <i class="fas fa-check-circle"></i> Kenapa Pilih BanditFlow?<br />
-                ⚡ Proses otomatis 1 detik &nbsp;|&nbsp; 🛡️ Server bot aman & stabil<br />
-                💰 Harga murah & terjangkau &nbsp;|&nbsp; 📞 Support fast respon 24 jam
-            </div>
-        </div>
-
-        <!-- MENU -->
-        <div class="menu-grid" id="menuGrid">
-            <button class="menu-btn active" data-target="marketplace"><i class="fas fa-store"></i> MarketPlace</button>
-            <button class="menu-btn" data-target="payment"><i class="fas fa-credit-card"></i> Payment</button>
-            <button class="menu-btn" data-target="sosial"><i class="fas fa-share-alt"></i> Social Media</button>
-            <button class="menu-btn" data-target="testimoni"><i class="fas fa-star"></i> Testimoni</button>
-            <button class="menu-btn" data-target="riwayat"><i class="fas fa-history"></i> Riwayat</button>
-            <button class="menu-btn" data-target="faq"><i class="fas fa-question-circle"></i> FAQ</button>
-        </div>
-
-        <!-- CONTENT -->
-        <div class="content-panel" id="contentPanel">
-
-            <!-- MARKETPLACE -->
-            <div id="marketplace" class="panel-content">
-                <h3>📦 MarketPlace</h3>
-                <p class="sub-title">👆 Geser untuk melihat produk</p>
-                <div class="product-slider" id="productSlider"></div>
-                <div class="footer-note">
-                    <i class="fas fa-shield-alt"></i> Pembelian Produk Di Vincent Market Di Jamin Aman Dan Mendapatkan Garansi
-                </div>
-            </div>
-
-            <!-- PAYMENT -->
-            <div id="payment" class="panel-content" style="display:none;">
-                <h3>💳 Payment Vincent Market 🏮🍀</h3>
-                <div class="payment-list">
-                    <div class="payment-item"><i class="fas fa-qrcode"></i> <span class="label">Qris</span> <span class="value"><a onclick="openQrisModal(); return false;">Lihat QRIS</a></span></div>
-                    <div class="payment-item"><i class="fas fa-wallet"></i> <span class="label">Dana</span> <span class="value">081973753505</span></div>
-                    <div class="payment-item"><i class="fas fa-wallet"></i> <span class="label">Gopay</span> <span class="value">081973753505</span></div>
-                    <div class="payment-item"><i class="fas fa-wallet"></i> <span class="label">Ovo</span> <span class="value">081973753505</span></div>
-                </div>
-                <div class="payment-note">
-                    <i class="fas fa-exclamation-triangle"></i> ! Jika Sudah Di Transfer Silahkan Kirim Bukti Transfer
-                </div>
-            </div>
-
-            <!-- SOSIAL -->
-            <div id="sosial" class="panel-content" style="display:none;">
-                <h3>🌐 Social Media</h3>
-                <div class="sosial-list">
-                    <div class="sosial-item"><i class="fas fa-headset"></i> CS: <a href="https://wa.me/6285928360811" target="_blank">+62 859-2836-0811</a></div>
-                    <div class="sosial-item"><i class="fab fa-tiktok"></i> TikTok: <a href="https://tiktok.com/@lightgmaill" target="_blank">@lightgmaill</a></div>
-                    <div class="sosial-item"><i class="fab fa-telegram"></i> Telegram: <a href="https://t.me/Vincentmarketplace" target="_blank">t.me/Vincentmarketplace</a></div>
-                    <div class="sosial-item"><i class="fas fa-envelope"></i> Gmail: hanzzmarket140@gmail.com</div>
-                    <div class="sosial-item"><i class="fab fa-youtube"></i> YouTube: <a href="https://www.youtube.com/@vincent_v1-v6e" target="_blank">@vincent_v1-v6e</a></div>
-                    <div class="sosial-item"><i class="fab fa-whatsapp"></i> Channel WA: <a href="https://whatsapp.com/channel/0029Vb8BSro8PgsFoGnSsm1u" target="_blank">Gabung</a></div>
-                    <div class="sosial-item"><i class="fas fa-users"></i> Group WA: <a href="https://chat.whatsapp.com/FtVqQso1drbI8T7TAMP6sc" target="_blank">Gabung Group</a></div>
-                </div>
-            </div>
-
-            <!-- TESTIMONI -->
-            <div id="testimoni" class="panel-content" style="display:none;">
-                <h3>⭐ Testimoni</h3>
-                <div class="testimoni-item"><strong>Abdul:</strong> Gokil</div>
-                <div class="testimoni-item"><strong>Vinicus:</strong> Pelayanan mantep</div>
-                <div class="testimoni-item"><strong>Rehan:</strong> mantep</div>
-                <div class="testimoni-item"><strong>Hinata:</strong> Gacor Bot Nya Lekk</div>
-            </div>
-
-            <!-- RIWAYAT -->
-            <div id="riwayat" class="panel-content" style="display:none;">
-                <h3>📜 Riwayat Orderan</h3>
-                <div class="riwayat-item">🕒 Anonim - Sewa Bot Jaga Group (Biasa 7 Hari) - Rp 1.000</div>
-                <div class="riwayat-item">🕒 Anonim - Panel Ram 2GB - Rp 2.500</div>
-                <div class="riwayat-item">🕒 Anonim - Script Website V1 - Rp 3.000</div>
-                <div class="riwayat-item">🕒 Anonim - Netflix Premium - Rp 22.000</div>
-                <div class="riwayat-item">🕒 Anonim - Nokos All Negara - Rp 12.000</div>
-                <div class="riwayat-item" style="font-style:italic;color:#6a7a9a;">... dan lainnya</div>
-            </div>
-
-            <!-- FAQ -->
-            <div id="faq" class="panel-content" style="display:none;">
-                <h3>❓ FAQ</h3>
-                <div class="faq-item"><strong>Apa itu Panel Bot?</strong><p>Panel Bot adalah hosting untuk menjalankan bot WhatsApp agar online 24 jam nonstop tanpa harus memakai HP utama.</p></div>
-                <div class="faq-item"><strong>Apa itu Bot WhatsApp?</strong><p>Bot WhatsApp adalah program otomatis yang dapat membalas pesan, menjalankan perintah, membuat fitur grup, dan membantu aktivitas WhatsApp secara otomatis.</p></div>
-                <div class="faq-item"><strong>Kapan panel aktif?</strong><p>Panel akan aktif otomatis dalam 1–3 detik setelah pembayaran berhasil.</p></div>
-                <div class="faq-item"><strong>Apakah Panel Bergaransi?</strong><p>Ya, garansi berlaku selama 1 bulan, selama server tetap aktif dan tidak melanggar ketentuan yang berlaku.</p></div>
-            </div>
-
-        </div>
+    <!-- dynamic content -->
+    <div id="contentPanel" class="content-panel">
+      <!-- default marketplace -->
+      <div id="marketplaceContent"></div>
     </div>
+    <div class="footer-note">❗ Pembelian Produk Di Vincent Market Di Jamin Aman Dan Mendapatkan Garansi</div>
+  </div>
+</div>
 
-    <!-- MODAL QRIS -->
-    <div class="modal-qris" id="modalQris">
-        <div class="modal-qris-content">
-            <h3>💳 QRIS</h3>
-            <img src="https://www.upload.ee/image/19447703/file.jpg" alt="QRIS" onerror="this.src='https://placehold.co/400x400/1a2a6a/fff?text=QRIS'" />
-            <div class="btn-group">
-                <button class="btn-download" onclick="downloadQris()"><i class="fas fa-download"></i> 📥 Download Qris</button>
-                <button class="btn-wa" onclick="kirimWa()"><i class="fab fa-whatsapp"></i> 🧾 Kirim Bukti Transfer</button>
-                <button class="btn-tutup" onclick="closeQris()"><i class="fas fa-times"></i> Tutup</button>
-            </div>
-        </div>
+<!-- modal qris (hidden) -->
+<div id="qrisModal" class="modal-overlay hidden" style="display:none;">
+  <div class="modal-box">
+    <img src="https://www.upload.ee/image/19447703/file.jpg" alt="QRIS" id="qrisImage" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22/%3E'">
+    <div class="modal-btn-group">
+      <button class="modal-btn" id="downloadQris">📥 Download Qris</button>
+      <button class="modal-btn kirim" id="kirimBukti">🧾 Kirim Bukti Transfer</button>
+      <button class="modal-btn tutup" id="tutupModal">Tutup</button>
     </div>
+  </div>
+</div>
 
-    <!-- MUSIC PLAYER -->
-    <div id="music-player">
-        <iframe src="https://open.spotify.com/embed/track/3ZwqWrRpylU9nfy99qwKdR?utm_source=generator&autoplay=1" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    </div>
+<script>
+  (function() {
+    // ----- DATA PRODUK (marketplace) -----
+    const products = [
+      { name: 'Sewa Bot Jaga Group', image: 'https://postimg.cc/B8hB6rdQ', packages: [
+        { label: 'Biasa 7 Hari', price: 'Rp 1.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1A%20Biasa%207%20Hari%20Total%1A%20Rp1000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Biasa 1 Bulan', price: 'Rp 4.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%2A%20Biasa%201%20Bulan%20Total%2A%20Rp4000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Biasa 4 Bulan', price: 'Rp 15.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%3A%20Biasa%204%20Bulan%20Total%3A%20Rp15000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Biasa 6 Bulan', price: 'Rp 22.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%4A%20Biasa%206%20Bulan%20Total%4A%20Rp22000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Biasa 1 Tahun', price: 'Rp 45.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%5A%20Biasa%201%20Tahun%20Total%5A%20Rp45000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Premium 7 Hari', price: 'Rp 3.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1B%20Premium%207%20Hari%20Total%1B%20Rp3000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Premium 1 Bulan', price: 'Rp 6.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%2B%20Premium%201%20Bulan%20Total%2B%20Rp6000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Premium 4 Bulan', price: 'Rp 22.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%3B%20Premium%204%20Bulan%20Total%3B%20Rp22000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Premium 6 Bulan', price: 'Rp 35.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%4B%20Premium%206%20Bulan%20Total%4B%20Rp35000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Premium 1 Tahun', price: 'Rp 75.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%5B%20Premium%201%20Tahun%20Total%5B%20Rp75000%20Saya%20lampirkan%20bukti%20transfer' }
+      ]},
+      { name: 'Panel Pterodactyle', image: '', packages: [
+        { label: 'Panel 1GB', price: 'Rp 1.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%201GB%20Total%1C%20Rp1500%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Panel 2GB', price: 'Rp 2.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%2C%20Panel%202GB%20Total%2C%20Rp2500%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Panel 3GB', price: 'Rp 3.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%203GB%20Total%1B%20Rp3500%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Panel 4GB', price: 'Rp 4.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%204GB%20Total%1B%20Rp4500%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Panel 5GB', price: 'Rp 5.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%205GB%20Total%1B%20Rp5500%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Panel 6GB', price: 'Rp 6.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%206GB%20Total%1B%20Rp6500%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Panel 7GB', price: 'Rp 7.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%207GB%20Total%1B%20Rp7500%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Panel 8GB', price: 'Rp 8.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%208GB%20Total%1B%20Rp8000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Panel 9GB', price: 'Rp 8.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%209GB%20Total%1B%20Rp8500%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Panel 10GB', price: 'Rp 9.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%2010GB%20Total%1B%20Rp9000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Panel Unlimited', price: 'Rp 11.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%20unlimited%20Total%1B%20Rp11000%20Saya%20lampirkan%20bukti%20transfer' }
+      ]},
+      { name: 'Script Website', image: 'https://postimg.cc/sQmBsBk7', packages: [
+        { label: 'Script Website V1', price: 'Rp 3.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Website%20Jualan%V1%20Total%1B%20Rp3000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Script Website V2', price: 'Rp 7.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Website%20Jualan%20V1%20Total%1B%20Rp7000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Script Website V3', price: 'Rp 7.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Website%20Jualan%20V3%20Total%1B%20Rp7000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Script Website V4', price: 'Rp 11.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Website%20Jualan%20V4%20Total%1B%20Rp11000%20Saya%20lampirkan%20bukti%20transfer' }
+      ]},
+      { name: 'Script Bot', image: 'https://postimg.cc/dLL7cV40', packages: [
+        { label: 'Bot Wa Pushkontak 1.0', price: 'Rp 7.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Bot%20Whatsaapp%20Pushkontak%201.0%20Total%1B%20Rp7000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Bot Wa Jaga Grup 1.0', price: 'Rp 7.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Bot%20Whatsaapp%20Jaga%20Grup%201.0%20Total%1B%20Rp7000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Bot Wa Multi Device 1.1', price: 'Rp 20.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Bot%20Whatsaapp%20Multi%20Device%201.1%20Total%1B%20Rp20000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Bot Wa Multi Device 2.0', price: 'Rp 17.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Bot%20Whatsaapp%20Multi%20Device%202.0%20Total%1B%20Rp17000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Bot Wa Store 1.0', price: 'Rp 17.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Bot%20Whatsaapp%20Store%201.0%20Total%1B%20Rp17000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Bot Wa Cpanel 1.0', price: 'Rp 12.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Bot%20Whatsaapp%20Cpanel%201.0%20Total%1B%20Rp12000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Bot Wa Jpm 1.0', price: 'Rp 12.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Bot%20Whatsaapp%20Jpm%201.0%20Total%1B%20Rp12000%20Saya%20lampirkan%20bukti%20transfer' }
+      ]},
+      { name: 'Apk Premium', image: 'https://postimg.cc/YLRnQH12', packages: [
+        { label: 'Netflix Premium', price: 'Rp 22.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Apk%20Netfix%20Premium%20Total%1B%20Rp22000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Canva Premium', price: 'Rp 11.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Apk%20Canva%20Premium%20Total%1B%20Rp11000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Capcut Premium', price: 'Rp 47.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Apk%20Capcut%20Premium%20Total%1B%20Rp47000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Spotify Premium', price: 'Rp 26.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Apk%20Spotify%20Premium%20Total%1B%20Rp26000%20Saya%20lampirkan%20bukti%20transfer' }
+      ]},
+      { name: 'Nokos All Negara', image: 'https://postimg.cc/yDbGfs2d', packages: [
+        { label: 'Nokos All Negara', price: 'Rp 12.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Nokos%20All%20Negara%20Total%1B%20Rp12000%20Saya%20lampirkan%20bukti%20transfer' }
+      ]}
+    ];
 
-    <script>
-        // ============================================================
-        // DATA PRODUK dengan gambar yang lebih reliable
-        // ============================================================
-        const produkData = [
-            // Sewa Bot - Biasa
-            { id: 'biasa_7', nama: 'Sewa Bot Jaga (Biasa 7H)', harga: 'Rp 1.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Biasa 7 Hari', total: 'Rp1000' },
-            { id: 'biasa_1bln', nama: 'Sewa Bot Jaga (Biasa 1B)', harga: 'Rp 4.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Biasa 1 Bulan', total: 'Rp4000' },
-            { id: 'biasa_4bln', nama: 'Sewa Bot Jaga (Biasa 4B)', harga: 'Rp 15.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Biasa 4 Bulan', total: 'Rp15000' },
-            { id: 'biasa_6bln', nama: 'Sewa Bot Jaga (Biasa 6B)', harga: 'Rp 22.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Biasa 6 Bulan', total: 'Rp22000' },
-            { id: 'biasa_1thn', nama: 'Sewa Bot Jaga (Biasa 1T)', harga: 'Rp 45.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Biasa 1 Tahun', total: 'Rp45000' },
-            
-            // Sewa Bot - Premium
-            { id: 'prem_7', nama: 'Sewa Bot Jaga (Premium 7H)', harga: 'Rp 3.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Premium 7 Hari', total: 'Rp3000' },
-            { id: 'prem_1bln', nama: 'Sewa Bot Jaga (Premium 1B)', harga: 'Rp 6.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Premium 1 Bulan', total: 'Rp6000' },
-            { id: 'prem_4bln', nama: 'Sewa Bot Jaga (Premium 4B)', harga: 'Rp 22.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Premium 4 Bulan', total: 'Rp22000' },
-            { id: 'prem_6bln', nama: 'Sewa Bot Jaga (Premium 6B)', harga: 'Rp 35.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Premium 6 Bulan', total: 'Rp35000' },
-            { id: 'prem_1thn', nama: 'Sewa Bot Jaga (Premium 1T)', harga: 'Rp 75.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Premium 1 Tahun', total: 'Rp75000' },
-            
-            // Panel Pterodactyle
-            { id: 'panel_1gb', nama: 'Panel Pterodactyle 1GB', harga: 'Rp 1.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 1GB', total: 'Rp1500' },
-            { id: 'panel_2gb', nama: 'Panel Pterodactyle 2GB', harga: 'Rp 2.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 2GB', total: 'Rp2500' },
-            { id: 'panel_3gb', nama: 'Panel Pterodactyle 3GB', harga: 'Rp 3.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 3GB', total: 'Rp3500' },
-            { id: 'panel_4gb', nama: 'Panel Pterodactyle 4GB', harga: 'Rp 4.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 4GB', total: 'Rp4500' },
-            { id: 'panel_5gb', nama: 'Panel Pterodactyle 5GB', harga: 'Rp 5.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 5GB', total: 'Rp5500' },
-            { id: 'panel_6gb', nama: 'Panel Pterodactyle 6GB', harga: 'Rp 6.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 6GB', total: 'Rp6500' },
-            { id: 'panel_7gb', nama: 'Panel Pterodactyle 7GB', harga: 'Rp 7.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 7GB', total: 'Rp7500' },
-            { id: 'panel_8gb', nama: 'Panel Pterodactyle 8GB', harga: 'Rp 8.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 8GB', total: 'Rp8000' },
-            { id: 'panel_9gb', nama: 'Panel Pterodactyle 9GB', harga: 'Rp 8.500', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 9GB', total: 'Rp8500' },
-            { id: 'panel_10gb', nama: 'Panel Pterodactyle 10GB', harga: 'Rp 9.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel 10GB', total: 'Rp9000' },
-            { id: 'panel_unlimited', nama: 'Panel Pterodactyle Unlimited', harga: 'Rp 11.000', img: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', paket: 'Panel Unlimited', total: 'Rp11000' },
-            
-            // Script Website
-            { id: 'script_v1', nama: 'Script Website V1', harga: 'Rp 3.000', img: 'https://i.postimg.cc/sQmBsBk7/image.jpg', paket: 'Script Website V1', total: 'Rp3000' },
-            { id: 'script_v2', nama: 'Script Website V2', harga: 'Rp 7.000', img: 'https://i.postimg.cc/sG2MXjzT/image.jpg', paket: 'Script Website V2', total: 'Rp7000' },
-            { id: 'script_v3', nama: 'Script Website V3', harga: 'Rp 7.000', img: 'https://i.postimg.cc/XZ3dW0r2/image.jpg', paket: 'Script Website V3', total: 'Rp7000' },
-            { id: 'script_v4', nama: 'Script Website V4', harga: 'Rp 11.000', img: 'https://i.postimg.cc/vD8gXznD/image.jpg', paket: 'Script Website V4', total: 'Rp11000' },
-            
-            // Script Bot
-            { id: 'bot_push', nama: 'Bot Wa - Pushkontak 1.0', harga: 'Rp 7.000', img: 'https://i.postimg.cc/dLL7cV40/image.jpg', paket: 'Bot Pushkontak 1.0', total: 'Rp7000' },
-            { id: 'bot_jaga', nama: 'Bot Wa - Jaga Grup 1.0', harga: 'Rp 7.000', img: 'https://i.postimg.cc/Bth8zK52/image.jpg', paket: 'Bot Jaga Grup 1.0', total: 'Rp7000' },
-            { id: 'bot_md1', nama: 'Bot Wa - Multi Device 1.1', harga: 'Rp 20.000', img: 'https://i.postimg.cc/1gZ4FcPD/image.jpg', paket: 'Bot Multi Device 1.1', total: 'Rp20000' },
-            { id: 'bot_md2', nama: 'Bot Wa - Multi Device 2.0', harga: 'Rp 17.000', img: 'https://i.postimg.cc/4KTncbZG/image.jpg', paket: 'Bot Multi Device 2.0', total: 'Rp17000' },
-            { id: 'bot_store', nama: 'Bot Wa - Store 1.0', harga: 'Rp 17.000', img: 'https://i.postimg.cc/9RLfs69C/image.jpg', paket: 'Bot Store 1.0', total: 'Rp17000' },
-            { id: 'bot_cpanel', nama: 'Bot Wa - Cpanel 1.0', harga: 'Rp 12.000', img: 'https://i.postimg.cc/Hc6LFqM7/image.jpg', paket: 'Bot Cpanel 1.0', total: 'Rp12000' },
-            { id: 'bot_jpm', nama: 'Bot Wa - Jpm 1.0', harga: 'Rp 12.000', img: 'https://i.postimg.cc/D8qykY7T/image.jpg', paket: 'Bot Jpm 1.0', total: 'Rp12000' },
-            
-            // APK Premium
-            { id: 'netflix', nama: 'Netflix Premium', harga: 'Rp 22.000', img: 'https://i.postimg.cc/YLRnQH12/image.jpg', paket: 'Netflix Premium', total: 'Rp22000' },
-            { id: 'canva', nama: 'Canva Premium', harga: 'Rp 11.000', img: 'https://i.postimg.cc/8JhnPWcb/image.jpg', paket: 'Canva Premium', total: 'Rp11000' },
-            { id: 'capcut', nama: 'Capcut Premium', harga: 'Rp 47.000', img: 'https://i.postimg.cc/7GvWkXxR/image.jpg', paket: 'Capcut Premium', total: 'Rp47000' },
-            { id: 'spotify', nama: 'Spotify Premium', harga: 'Rp 26.000', img: 'https://i.postimg.cc/9zdvW3wP/image.jpg', paket: 'Spotify Premium', total: 'Rp26000' },
-            { id: 'nokos', nama: 'Nokos All Negara', harga: 'Rp 12.000', img: 'https://i.postimg.cc/yDbGfs2d/image.jpg', paket: 'Nokos All Negara', total: 'Rp12000' }
-        ];
+    // ----- state -----
+    let currentWaLink = '';
 
-        // ============================================================
-        // RENDER PRODUK
-        // ============================================================
-        function renderProduk() {
-            const slider = document.getElementById('productSlider');
-            slider.innerHTML = '';
-            produkData.forEach(p => {
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                card.innerHTML = `
-                    <img src="${p.img}" alt="${p.nama}" onerror="this.src='https://placehold.co/400x200/1a2a6a/fff?text=Vincent+Market'" />
-                    <div class="name">${p.nama}</div>
-                    <div class="price">${p.harga}</div>
-                    <button class="btn-pilih" data-paket="${p.paket}" data-total="${p.total}"><i class="fas fa-shopping-cart"></i> Pilih Paket</button>
+    // DOM refs
+    const splash = document.getElementById('splash');
+    const main = document.getElementById('mainContent');
+    const btnStart = document.getElementById('btnStart');
+    const contentPanel = document.getElementById('contentPanel');
+    const modal = document.getElementById('qrisModal');
+    const downloadBtn = document.getElementById('downloadQris');
+    const kirimBtn = document.getElementById('kirimBukti');
+    const tutupBtn = document.getElementById('tutupModal');
+
+    // ----- helper render marketplace -----
+    function renderMarketplace() {
+      let html = `<div class="carousel">`;
+      products.forEach((p, idx) => {
+        const img = p.image || 'https://via.placeholder.com/200x120/ccd9e6/0a2a44?text=Produk';
+        html += `<div class="product-card">
+          <img src="${img}" alt="${p.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22120%22/%3E'">
+          <h4>${p.name}</h4>
+          <div style="font-size:0.7rem; color:#1e4a6b; margin:4px 0;">${p.packages.length} paket</div>
+          <button class="btn-pilih" data-prod="${idx}">Pilih Paket</button>
+        </div>`;
+      });
+      html += `</div><div style="margin-top:4px; font-size:0.7rem; color:#2a4a6a;">👆 Geser untuk produk lain</div>`;
+      contentPanel.innerHTML = html;
+
+      // event pilih paket -> tampilkan modal dengan paket2
+      document.querySelectorAll('.btn-pilih').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const prodIdx = parseInt(this.dataset.prod);
+          const prod = products[prodIdx];
+          if (!prod) return;
+          // buat list paket di modal? kita tampilkan quick pilihan
+          let listHtml = `<div style="text-align:left; margin:12px 0; max-height:200px; overflow-y:auto;">`;
+          prod.packages.forEach((pkg, i) => {
+            listHtml += `<div style="display:flex; justify-content:space-between; align-items:center; background:#f2f8fe; padding:4px 10px; border-radius:30px; margin:4px 0;">
+              <span><strong>${pkg.label}</strong> ${pkg.price}</span>
+              <button class="pilih-paket-item" style="background:#a4161a; color:white; border:none; border-radius:30px; padding:4px 14px; font-weight:600;" data-wa="${pkg.wa}">Pilih</button>
+            </div>`;
+          });
+          listHtml += `</div>`;
+          // Tampilkan di modal, kita isi ulang
+          const modalBox = modal.querySelector('.modal-box');
+          // hapus child kecuali img
+          const img = modalBox.querySelector('img');
+          modalBox.innerHTML = '';
+          modalBox.appendChild(img);
+          const div = document.createElement('div');
+          div.innerHTML = listHtml;
+          modalBox.appendChild(div);
+          // tambah tombol tutup
+          const tutup = document.createElement('button');
+          tutup.className = 'modal-btn tutup';
+          tutup.textContent = 'Tutup';
+          tutup.style.marginTop = '12px';
+          tutup.addEventListener('click', () => { modal.style.display = 'none'; });
+          modalBox.appendChild(tutup);
+          // event pilih paket
+          modalBox.querySelectorAll('.pilih-paket-item').forEach(b => {
+            b.addEventListener('click', function(e) {
+              e.stopPropagation();
+              const wa = this.dataset.wa;
+              if (wa) {
+                currentWaLink = wa;
+                // set kirim bukti link
+                kirimBtn.dataset.wa = wa;
+                // tampilkan qris default
+                modal.querySelector('img').src = 'https://www.upload.ee/image/19447703/file.jpg';
+                // kita ubah modal untuk menampilkan qris + tombol
+                modalBox.innerHTML = `
+                  <img src="https://www.upload.ee/image/19447703/file.jpg" style="width:100%; max-height:200px; object-fit:contain; border-radius:24px;">
+                  <div class="modal-btn-group">
+                    <button class="modal-btn" id="downloadQris">📥 Download Qris</button>
+                    <button class="modal-btn kirim" id="kirimBukti" data-wa="${wa}">🧾 Kirim Bukti Transfer</button>
+                    <button class="modal-btn tutup" id="tutupModal">Tutup</button>
+                  </div>
                 `;
-                slider.appendChild(card);
+                // reattach events
+                document.getElementById('downloadQris').addEventListener('click', downloadQris);
+                document.getElementById('kirimBukti').addEventListener('click', kirimBuktiHandler);
+                document.getElementById('tutupModal').addEventListener('click', () => { modal.style.display = 'none'; });
+                modal.style.display = 'flex';
+              }
             });
-
-            document.querySelectorAll('.btn-pilih').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const paket = this.dataset.paket;
-                    const total = this.dataset.total;
-                    openQrisModal(paket, total);
-                });
-            });
-        }
-
-        // ============================================================
-        // MODAL QRIS
-        // ============================================================
-        let selectedPaket = 'Paket';
-        let selectedTotal = 'Rp0';
-
-        function openQrisModal(paket = 'Paket', total = 'Rp0') {
-            selectedPaket = paket;
-            selectedTotal = total;
-            document.getElementById('modalQris').classList.add('open');
-        }
-
-        function closeQris() {
-            document.getElementById('modalQris').classList.remove('open');
-        }
-
-        function downloadQris() {
-            const link = document.createElement('a');
-            link.href = 'https://www.upload.ee/image/19447703/file.jpg';
-            link.download = 'qris_vincentmarket.jpg';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function kirimWa() {
-            const msg = `Halo Admin, saya sudah bayar. Paket: ${selectedPaket} Total: ${selectedTotal} Saya lampirkan bukti transfer`;
-            window.open(`https://wa.me?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
-        // ============================================================
-        // MENU NAVIGASI
-        // ============================================================
-        const menuBtns = document.querySelectorAll('.menu-btn');
-        const panels = {
-            marketplace: document.getElementById('marketplace'),
-            payment: document.getElementById('payment'),
-            sosial: document.getElementById('sosial'),
-            testimoni: document.getElementById('testimoni'),
-            riwayat: document.getElementById('riwayat'),
-            faq: document.getElementById('faq'),
-        };
-
-        menuBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                menuBtns.forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                const target = this.dataset.target;
-                Object.keys(panels).forEach(key => {
-                    panels[key].style.display = (key === target) ? 'block' : 'none';
-                });
-            });
+          });
+          modal.style.display = 'flex';
         });
+      });
+    }
 
-        // ============================================================
-        // INIT
-        // ============================================================
-        window.addEventListener('DOMContentLoaded', function() {
-            renderProduk();
+    // ----- modal handlers -----
+    function downloadQris() {
+      const link = document.createElement('a');
+      link.href = 'https://www.upload.ee/image/19447703/file.jpg';
+      link.download = 'qris_vincent.jpg';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
 
-            setTimeout(() => {
-                document.getElementById('loading-screen').classList.add('hide');
-                document.getElementById('welcome-overlay').classList.add('show');
-            }, 2000);
+    function kirimBuktiHandler(e) {
+      const wa = this.dataset.wa || currentWaLink;
+      if (wa) window.open(wa, '_blank');
+      else alert('Link WA tidak tersedia');
+    }
 
-            document.getElementById('btnStart').addEventListener('click', function() {
-                document.getElementById('welcome-overlay').classList.remove('show');
-                document.getElementById('app').classList.add('active');
-            });
-        });
+    // ----- menu opsi -----
+    function handleMenu(opt) {
+      let html = '';
+      if (opt === '1') { // marketplace
+        renderMarketplace();
+        return;
+      } else if (opt === '2') { // payment
+        html = `<div style="padding:6px 0;"><h3 style="color:#0a2a44;">💳 Payment Vincent Market</h3>
+          <div class="payment-list"><strong>Qris:</strong> <br><img src="https://www.upload.ee/image/19447703/file.jpg" style="width:100%; max-height:140px; object-fit:contain; border-radius:20px; background:white; margin:4px 0;"></div>
+          <div class="payment-list"><strong>Dana:</strong> 081973753505</div>
+          <div class="payment-list"><strong>Gopay:</strong> 081973753505</div>
+          <div class="payment-list"><strong>Ovo:</strong> 081973753505</div>
+          <div style="background:#d9e9f5; border-radius:30px; padding:8px; margin-top:8px; font-weight:500;">❗ Jika Sudah Di Transfer Silahkan Kirim Bukti Transfer</div>
+        </div>`;
+      } else if (opt === '3') { // social media
+        html = `<div><h3 style="color:#0a2a44;">📱 Social Media</h3>
+          <div class="payment-list">📞 Customer Service: +62 859-2836-0811</div>
+          <div class="payment-list">📱 Tiktok: lightgmaill</div>
+          <div class="payment-list">✈️ Telegram: t.me/Vincentmarketplace</div>
+          <div class="payment-list">📧 Gmail: hanzzmarket140@gmail.com</div>
+          <div class="payment-list">▶ YouTube: https://www.youtube.com/@vincent_v1-v6e</div>
+          <div class="payment-list">📢 Channel WhatsApp: https://whatsapp.com/channel/0029Vb8BSro8PgsFoGnSsm1u</div>
+          <div class="payment-list">👥 Group Vincent Marketplace: https://chat.whatsapp.com/FtVqQso1drbI8T7TAMP6sc</div>
+        </div>`;
+      } else if (opt === '4') { // testimoni
+        html = `<div><h3 style="color:#0a2a44;">⭐ Testimoni</h3>
+          <div class="testi-item">Abdul: Gokil</div>
+          <div class="testi-item">Vinicus: Pelayanan mantep</div>
+          <div class="testi-item">Rehan: mantep</div>
+          <div class="testi-item">Hinata: Gacor Bot Nya Lekk</div>
+        </div>`;
+      } else if (opt === '5') { // riwayat
+        html = `<div><h3 style="color:#0a2a44;">📜 Riwayat Pembelian</h3>
+          <div class="riwayat-item">Anonim - Sewa Bot Jaga Group (Biasa 7 Hari) - Rp 1.000</div>
+          <div class="riwayat-item">Anonim - Panel Pterodactyle 2GB - Rp 2.500</div>
+          <div class="riwayat-item">Anonim - Script Website V1 - Rp 3.000</div>
+          <div class="riwayat-item">Anonim - Bot Wa Multi Device 2.0 - Rp 17.000</div>
+          <div class="riwayat-item">Anonim - Netflix Premium - Rp 22.000</div>
+          <div class="riwayat-item">Anonim - Nokos All Negara - Rp 12.000</div>
+          <div style="margin-top:8px; font-size:0.8rem; color:#1f4a6b;">* data anonim</div>
+        </div>`;
+      } else if (opt === '6') { // faq
+        html = `<div><h3 style="color:#0a2a44;">❓ FAQ</h3>
+          <div class="faq-item"><strong>Apa itu Panel Bot?</strong><br>Panel Bot adalah hosting untuk menjalankan bot WhatsApp agar online 24 jam nonstop tanpa harus memakai HP utama.</div>
+          <div class="faq-item"><strong>Apa itu Bot WhatsApp?</strong><br>Bot WhatsApp adalah program otomatis yang dapat membalas pesan, menjalankan perintah, membuat fitur grup, dan membantu aktivitas WhatsApp secara otomatis.</div>
+          <div class="faq-item"><strong>Kapan panel aktif?</strong><br>Panel akan aktif otomatis dalam 1–3 detik setelah pembayaran berhasil.</div>
+          <div class="faq-item"><strong>Apakah Panel Bergaransi?</strong><br>Ya, garansi berlaku selama 1 bulan, selama server tetap aktif dan tidak melanggar ketentuan yang berlaku.</div>
+        </div>`;
+      }
+      contentPanel.innerHTML = html;
+    }
 
-        // Tutup modal klik luar
-        document.getElementById('modalQris').addEventListener('click', function(e) {
-            if (e.target === this) closeQris();
-        });
+    // ----- init event menu -----
+    document.querySelectorAll('.menu-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const opt = this.dataset.opt;
+        handleMenu(opt);
+      });
+    });
 
-        console.log('🚀 VincentMarket siap!');
-    </script>
+    // ----- splash & start -----
+    btnStart.addEventListener('click', function() {
+      splash.classList.add('hidden');
+      main.classList.remove('hidden');
+      renderMarketplace(); // default
+      // play lagu (spotify embed)
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = 'https://open.spotify.com/embed/track/3ZwqWrRpylU9nfy99qwKdR?utm_source=generator&autoplay=1';
+      iframe.allow = 'autoplay; encrypted-media';
+      iframe.allowFullscreen = false;
+      document.body.appendChild(iframe);
+    });
+
+    // modal event global
+    downloadBtn.addEventListener('click', downloadQris);
+    kirimBtn.addEventListener('click', kirimBuktiHandler);
+    tutupBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+    window.addEventListener('click', function(e) {
+      if (e.target === modal) modal.style.display = 'none';
+    });
+
+    // initial load: splash visible, main hidden
+  })();
+</script>
 </body>
 </html>
