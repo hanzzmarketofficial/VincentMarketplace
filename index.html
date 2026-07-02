@@ -18,7 +18,6 @@
       color: #0b1e2b;
       padding: 0 0 30px 0;
     }
-    /* loading overlay */
     #loading-overlay {
       position: fixed;
       inset: 0;
@@ -74,14 +73,11 @@
     .start-btn.hidden {
       display: none;
     }
-
-    /* main content */
     .container {
       max-width: 1300px;
       margin: 0 auto;
       padding: 20px 16px 30px;
     }
-    /* banner utama (pajangan) */
     .hero-banner {
       width: 100%;
       border-radius: 32px;
@@ -141,7 +137,6 @@
       padding: 8px 18px;
       border-radius: 30px;
     }
-    /* menu opsi */
     .menu-grid {
       display: flex;
       flex-wrap: wrap;
@@ -177,8 +172,6 @@
       color: white;
       border-color: #1e3a5f;
     }
-
-    /* panel konten */
     .panel-content {
       background: rgba(255,255,255,0.65);
       backdrop-filter: blur(8px);
@@ -274,8 +267,6 @@
       transform: translateY(3px);
       box-shadow: 0 1px 0 #7f1d1d;
     }
-
-    /* modal qris */
     .modal-qris {
       position: fixed;
       inset: 0;
@@ -401,13 +392,13 @@
 
 <div class="container" id="mainApp" style="display:none;">
   
-  <!-- BANNER PAJANGAN (gambar ke-4 sebagai hero) -->
+  <!-- BANNER PAJANGAN -->
   <div class="hero-banner">
     <img src="https://i.postimg.cc/5j8k2kft/image.jpg" alt="Vincent Market Banner" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 800 300%22%3E%3Crect fill=%22%232563eb%22 width=%22800%22 height=%22300%22/%3E%3Ctext x=%22200%22 y=%22160%22 fill=%22white%22 font-size=%2250%22 font-weight=%22bold%22%3EVincent Market%3C/text%3E%3C/svg%3E'">
     <div class="overlay-text">Vincent Market</div>
   </div>
 
-  <!-- header tanpa gambar profil -->
+  <!-- header -->
   <div class="brand-header">
     <h1><i class="fas fa-store-alt" style="color:#2563eb; -webkit-text-fill-color:#2563eb;"></i> Vincent Market</h1>
     <span><i class="fas fa-shield-alt"></i> aman & garansi</span>
@@ -457,11 +448,10 @@
 
 <script>
   (function() {
-    // ---------- LOADING ----------
+    // LOADING
     const overlay = document.getElementById('loading-overlay');
     const startBtn = document.getElementById('startBtn');
     const mainApp = document.getElementById('mainApp');
-    const welcomeText = document.getElementById('welcomeText');
 
     setTimeout(() => {
       startBtn.classList.remove('hidden');
@@ -470,7 +460,6 @@
     startBtn.addEventListener('click', function() {
       overlay.classList.add('hide');
       mainApp.style.display = 'block';
-      // putar lagu spotify
       const iframe = document.createElement('iframe');
       iframe.style.display = 'none';
       iframe.src = 'https://open.spotify.com/embed/track/3ZwqWrRpylU9nfy99qwKdR?autoplay=1&loop=1';
@@ -479,11 +468,10 @@
       renderMenu('marketplace');
     });
 
-    // ---------- DATA PRODUK (GAMBAR DIAMBIL DARI POSTIMG DENGAN FORMAT LANGSUNG) ----------
-    // Saya gunakan URL langsung dari postimg (bisa diakses)
+    // DATA PRODUK dengan gambar spesifik
     const productImages = {
       'Sewa Bot Jaga Group': 'https://i.postimg.cc/B8hB6rdQ/image.jpg',
-      'Panel Pterodactyle': 'https://i.postimg.cc/B8hB6rdQ/image.jpg',
+      'Panel Pterodactyle': 'https://i.postimg.cc/BnKG3QdL/file-0000000069e47208aa68032092a29b9b.png', // GAMBAR BARU
       'Script Website': 'https://i.postimg.cc/sQmBsBk7/image.jpg',
       'Script Bot': 'https://i.postimg.cc/dLL7cV40/image.jpg',
       'Apk Premium': 'https://i.postimg.cc/YLRnQH12/image.jpg'
@@ -554,7 +542,7 @@
       }
     };
 
-    // ---------- RENDER MARKETPLACE ----------
+    // RENDER MARKETPLACE
     function renderMarketplace() {
       let html = `<h2><i class="fas fa-store-alt" style="color:#2563eb;"></i> MarketPlace</h2><div class="product-grid">`;
       for (let [cat, data] of Object.entries(products)) {
@@ -580,7 +568,7 @@
       });
     }
 
-    // ---------- MODAL QRIS ----------
+    // MODAL QRIS
     let currentWaLink = '';
     function openQrisModal(waLink) {
       currentWaLink = waLink;
@@ -601,7 +589,7 @@
       }
     });
 
-    // ---------- MENU NAVIGATION ----------
+    // MENU NAVIGATION
     function renderMenu(menu) {
       const panel = document.getElementById('panelContent');
       document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
