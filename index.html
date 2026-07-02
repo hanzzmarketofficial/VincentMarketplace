@@ -61,6 +61,13 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-shadow: 0 2px 10px rgba(0,60,120,0.15);
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards;
+      animation-delay: 0.5s;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .splash .sub {
       color: #1e3b5a;
@@ -69,6 +76,9 @@
       padding: 6px 18px;
       border-radius: 40px;
       backdrop-filter: blur(4px);
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards;
+      animation-delay: 0.8s;
     }
     .btn-start {
       background: #0a2a44;
@@ -84,6 +94,9 @@
       letter-spacing: 0.5px;
       margin-top: 10px;
       border: 1px solid rgba(255,255,255,0.15);
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards;
+      animation-delay: 1.2s;
     }
     .btn-start:active { transform: scale(0.95); background: #123b5e; }
     .hidden { display: none !important; }
@@ -216,11 +229,14 @@
       top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.6);
       backdrop-filter: blur(10px);
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
       z-index: 999;
       padding: 20px;
+    }
+    .modal-overlay.active {
+      display: flex;
     }
     .modal-box {
       max-width: 380px;
@@ -232,7 +248,13 @@
       box-shadow: 0 40px 60px rgba(0,0,0,0.5);
       border: 1px solid rgba(255,255,255,0.2);
     }
-    .modal-box img { width: 100%; max-height: 240px; object-fit: contain; border-radius: 24px; background: #f0f6fc; }
+    .modal-box img { 
+      width: 100%; 
+      max-height: 240px; 
+      object-fit: contain; 
+      border-radius: 24px; 
+      background: #f0f6fc;
+    }
     .modal-btn-group {
       display: flex;
       flex-direction: column;
@@ -266,23 +288,43 @@
     .faq-item { background: #eaf2f9; padding: 10px 16px; border-radius: 20px; margin: 6px 0; }
     .riwayat-item { background: white; padding: 8px 14px; border-radius: 20px; margin: 4px 0; font-size: 0.9rem; }
     .footer-note { margin-top: 16px; text-align: center; font-weight: 500; color: #0a2a44; background: rgba(255,255,255,0.5); padding: 8px; border-radius: 40px; backdrop-filter: blur(4px); }
+    
+    .package-list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f2f8fe;
+      padding: 8px 12px;
+      border-radius: 30px;
+      margin: 6px 0;
+    }
+    .package-list-item button {
+      background: #a4161a;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 6px 16px;
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+    .package-list-item button:active { opacity: 0.7; transform: scale(0.95); }
   </style>
 </head>
 <body>
 <div class="app" id="app">
   <!-- SPLASH -->
   <div id="splash" class="splash">
-    <div class="loader"></div>
-    <h1>Halo Selamat Datang</h1>
-    <div class="sub">VincentMarket</div>
-    <button class="btn-start" id="btnStart">▶ Start</button>
+    <div class="loader" id="loaderIcon"></div>
+    <h1 id="welcomeText">Halo Selamat Datang</h1>
+    <div class="sub" id="subText">VincentMarket</div>
+    <button class="btn-start hidden" id="btnStart">▶ Start</button>
   </div>
 
   <!-- MAIN -->
   <div id="mainContent" class="main-content hidden">
     <!-- hero -->
     <div class="hero-card">
-      <img src="https://postimg.cc/5j8k2kft" alt="Vincent Market" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22/%3E'">
+      <img src="https://i.postimg.cc/5j8k2kft/image.jpg" alt="Vincent Market" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect fill=%22%23b8d4e8%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%230a2a44%22 font-size=%2230%22 font-weight=%22bold%22%3EVincent Market%3C/text%3E%3C/svg%3E'">
       <div class="hero-title">Vincent Market <span>⚡</span></div>
       <div class="hero-desc">
         <span>⚡ Proses otomatis 1 detik</span>
@@ -305,16 +347,15 @@
     <!-- dynamic content -->
     <div id="contentPanel" class="content-panel">
       <!-- default marketplace -->
-      <div id="marketplaceContent"></div>
     </div>
     <div class="footer-note">❗ Pembelian Produk Di Vincent Market Di Jamin Aman Dan Mendapatkan Garansi</div>
   </div>
 </div>
 
-<!-- modal qris (hidden) -->
-<div id="qrisModal" class="modal-overlay hidden" style="display:none;">
-  <div class="modal-box">
-    <img src="https://www.upload.ee/image/19447703/file.jpg" alt="QRIS" id="qrisImage" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22/%3E'">
+<!-- modal qris -->
+<div id="qrisModal" class="modal-overlay">
+  <div class="modal-box" id="modalBox">
+    <img src="https://www.upload.ee/image/19447703/file.jpg" alt="QRIS" id="qrisImage" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23ddd%22 width=%22200%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23666%22 font-size=%2220%22%3EQRIS%3C/text%3E%3C/svg%3E'">
     <div class="modal-btn-group">
       <button class="modal-btn" id="downloadQris">📥 Download Qris</button>
       <button class="modal-btn kirim" id="kirimBukti">🧾 Kirim Bukti Transfer</button>
@@ -327,54 +368,54 @@
   (function() {
     // ----- DATA PRODUK (marketplace) -----
     const products = [
-      { name: 'Sewa Bot Jaga Group', image: 'https://postimg.cc/B8hB6rdQ', packages: [
-        { label: 'Biasa 7 Hari', price: 'Rp 1.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1A%20Biasa%207%20Hari%20Total%1A%20Rp1000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Biasa 1 Bulan', price: 'Rp 4.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%2A%20Biasa%201%20Bulan%20Total%2A%20Rp4000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Biasa 4 Bulan', price: 'Rp 15.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%3A%20Biasa%204%20Bulan%20Total%3A%20Rp15000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Biasa 6 Bulan', price: 'Rp 22.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%4A%20Biasa%206%20Bulan%20Total%4A%20Rp22000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Biasa 1 Tahun', price: 'Rp 45.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%5A%20Biasa%201%20Tahun%20Total%5A%20Rp45000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Premium 7 Hari', price: 'Rp 3.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1B%20Premium%207%20Hari%20Total%1B%20Rp3000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Premium 1 Bulan', price: 'Rp 6.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%2B%20Premium%201%20Bulan%20Total%2B%20Rp6000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Premium 4 Bulan', price: 'Rp 22.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%3B%20Premium%204%20Bulan%20Total%3B%20Rp22000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Premium 6 Bulan', price: 'Rp 35.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%4B%20Premium%206%20Bulan%20Total%4B%20Rp35000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Premium 1 Tahun', price: 'Rp 75.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%5B%20Premium%201%20Tahun%20Total%5B%20Rp75000%20Saya%20lampirkan%20bukti%20transfer' }
+      { name: 'Sewa Bot Jaga Group', image: 'https://i.postimg.cc/B8hB6rdQ/image.jpg', packages: [
+        { label: 'Biasa 7 Hari', price: 'Rp 1.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Biasa%207%20Hari%20Total%20Rp1000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Biasa 1 Bulan', price: 'Rp 4.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Biasa%201%20Bulan%20Total%20Rp4000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Biasa 4 Bulan', price: 'Rp 15.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Biasa%204%20Bulan%20Total%20Rp15000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Biasa 6 Bulan', price: 'Rp 22.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Biasa%206%20Bulan%20Total%20Rp22000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Biasa 1 Tahun', price: 'Rp 45.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Biasa%201%20Tahun%20Total%20Rp45000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Premium 7 Hari', price: 'Rp 3.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Premium%207%20Hari%20Total%20Rp3000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Premium 1 Bulan', price: 'Rp 6.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Premium%201%20Bulan%20Total%20Rp6000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Premium 4 Bulan', price: 'Rp 22.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Premium%204%20Bulan%20Total%20Rp22000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Premium 6 Bulan', price: 'Rp 35.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Premium%206%20Bulan%20Total%20Rp35000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Premium 1 Tahun', price: 'Rp 75.000', wa: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Premium%201%20Tahun%20Total%20Rp75000%20Saya%20lampirkan%20bukti%20transfer' }
       ]},
       { name: 'Panel Pterodactyle', image: '', packages: [
-        { label: 'Panel 1GB', price: 'Rp 1.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%201GB%20Total%1C%20Rp1500%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Panel 2GB', price: 'Rp 2.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%2C%20Panel%202GB%20Total%2C%20Rp2500%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Panel 3GB', price: 'Rp 3.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%203GB%20Total%1B%20Rp3500%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Panel 4GB', price: 'Rp 4.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%204GB%20Total%1B%20Rp4500%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Panel 5GB', price: 'Rp 5.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%205GB%20Total%1B%20Rp5500%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Panel 6GB', price: 'Rp 6.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%206GB%20Total%1B%20Rp6500%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Panel 7GB', price: 'Rp 7.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%207GB%20Total%1B%20Rp7500%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Panel 8GB', price: 'Rp 8.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%208GB%20Total%1B%20Rp8000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Panel 9GB', price: 'Rp 8.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%209GB%20Total%1B%20Rp8500%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Panel 10GB', price: 'Rp 9.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%2010GB%20Total%1B%20Rp9000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Panel Unlimited', price: 'Rp 11.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%20unlimited%20Total%1B%20Rp11000%20Saya%20lampirkan%20bukti%20transfer' }
+        { label: 'Panel 1GB', price: 'Rp 1.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Panel%201GB%20Total%20Rp1500%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Panel 2GB', price: 'Rp 2.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Panel%202GB%20Total%20Rp2500%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Panel 3GB', price: 'Rp 3.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Panel%203GB%20Total%20Rp3500%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Panel 4GB', price: 'Rp 4.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Panel%204GB%20Total%20Rp4500%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Panel 5GB', price: 'Rp 5.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Panel%205GB%20Total%20Rp5500%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Panel 6GB', price: 'Rp 6.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Panel%206GB%20Total%20Rp6500%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Panel 7GB', price: 'Rp 7.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Panel%207GB%20Total%20Rp7500%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Panel 8GB', price: 'Rp 8.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Panel%208GB%20Total%20Rp8000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Panel 9GB', price: 'Rp 8.500', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Panel%209GB%20Total%20Rp8500%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Panel 10GB', price: 'Rp 9.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Panel%2010GB%20Total%20Rp9000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Panel Unlimited', price: 'Rp 11.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Panel%20unlimited%20Total%20Rp11000%20Saya%20lampirkan%20bukti%20transfer' }
       ]},
-      { name: 'Script Website', image: 'https://postimg.cc/sQmBsBk7', packages: [
-        { label: 'Script Website V1', price: 'Rp 3.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Website%20Jualan%V1%20Total%1B%20Rp3000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Script Website V2', price: 'Rp 7.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Website%20Jualan%20V1%20Total%1B%20Rp7000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Script Website V3', price: 'Rp 7.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Website%20Jualan%20V3%20Total%1B%20Rp7000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Script Website V4', price: 'Rp 11.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Website%20Jualan%20V4%20Total%1B%20Rp11000%20Saya%20lampirkan%20bukti%20transfer' }
+      { name: 'Script Website', image: 'https://i.postimg.cc/sQmBsBk7/image.jpg', packages: [
+        { label: 'Script Website V1', price: 'Rp 3.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Script%20Website%20V1%20Total%20Rp3000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Script Website V2', price: 'Rp 7.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Script%20Website%20V2%20Total%20Rp7000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Script Website V3', price: 'Rp 7.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Script%20Website%20V3%20Total%20Rp7000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Script Website V4', price: 'Rp 11.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Script%20Website%20V4%20Total%20Rp11000%20Saya%20lampirkan%20bukti%20transfer' }
       ]},
-      { name: 'Script Bot', image: 'https://postimg.cc/dLL7cV40', packages: [
-        { label: 'Bot Wa Pushkontak 1.0', price: 'Rp 7.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Bot%20Whatsaapp%20Pushkontak%201.0%20Total%1B%20Rp7000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Bot Wa Jaga Grup 1.0', price: 'Rp 7.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Bot%20Whatsaapp%20Jaga%20Grup%201.0%20Total%1B%20Rp7000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Bot Wa Multi Device 1.1', price: 'Rp 20.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Bot%20Whatsaapp%20Multi%20Device%201.1%20Total%1B%20Rp20000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Bot Wa Multi Device 2.0', price: 'Rp 17.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Bot%20Whatsaapp%20Multi%20Device%202.0%20Total%1B%20Rp17000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Bot Wa Store 1.0', price: 'Rp 17.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Bot%20Whatsaapp%20Store%201.0%20Total%1B%20Rp17000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Bot Wa Cpanel 1.0', price: 'Rp 12.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Bot%20Whatsaapp%20Cpanel%201.0%20Total%1B%20Rp12000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Bot Wa Jpm 1.0', price: 'Rp 12.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Bot%20Whatsaapp%20Jpm%201.0%20Total%1B%20Rp12000%20Saya%20lampirkan%20bukti%20transfer' }
+      { name: 'Script Bot', image: 'https://i.postimg.cc/dLL7cV40/image.jpg', packages: [
+        { label: 'Bot Wa Pushkontak 1.0', price: 'Rp 7.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Bot%20Pushkontak%201.0%20Total%20Rp7000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Bot Wa Jaga Grup 1.0', price: 'Rp 7.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Bot%20Jaga%20Grup%201.0%20Total%20Rp7000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Bot Wa Multi Device 1.1', price: 'Rp 20.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Bot%20Multi%20Device%201.1%20Total%20Rp20000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Bot Wa Multi Device 2.0', price: 'Rp 17.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Bot%20Multi%20Device%202.0%20Total%20Rp17000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Bot Wa Store 1.0', price: 'Rp 17.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Bot%20Store%201.0%20Total%20Rp17000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Bot Wa Cpanel 1.0', price: 'Rp 12.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Bot%20Cpanel%201.0%20Total%20Rp12000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Bot Wa Jpm 1.0', price: 'Rp 12.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Bot%20Jpm%201.0%20Total%20Rp12000%20Saya%20lampirkan%20bukti%20transfer' }
       ]},
-      { name: 'Apk Premium', image: 'https://postimg.cc/YLRnQH12', packages: [
-        { label: 'Netflix Premium', price: 'Rp 22.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Apk%20Netfix%20Premium%20Total%1B%20Rp22000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Canva Premium', price: 'Rp 11.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Apk%20Canva%20Premium%20Total%1B%20Rp11000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Capcut Premium', price: 'Rp 47.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Apk%20Capcut%20Premium%20Total%1B%20Rp47000%20Saya%20lampirkan%20bukti%20transfer' },
-        { label: 'Spotify Premium', price: 'Rp 26.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Apk%20Spotify%20Premium%20Total%1B%20Rp26000%20Saya%20lampirkan%20bukti%20transfer' }
+      { name: 'Apk Premium', image: 'https://i.postimg.cc/YLRnQH12/image.jpg', packages: [
+        { label: 'Netflix Premium', price: 'Rp 22.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Netflix%20Premium%20Total%20Rp22000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Canva Premium', price: 'Rp 11.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Canva%20Premium%20Total%20Rp11000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Capcut Premium', price: 'Rp 47.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Capcut%20Premium%20Total%20Rp47000%20Saya%20lampirkan%20bukti%20transfer' },
+        { label: 'Spotify Premium', price: 'Rp 26.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Spotify%20Premium%20Total%20Rp26000%20Saya%20lampirkan%20bukti%20transfer' }
       ]},
-      { name: 'Nokos All Negara', image: 'https://postimg.cc/yDbGfs2d', packages: [
-        { label: 'Nokos All Negara', price: 'Rp 12.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Nokos%20All%20Negara%20Total%1B%20Rp12000%20Saya%20lampirkan%20bukti%20transfer' }
+      { name: 'Nokos All Negara', image: 'https://i.postimg.cc/yDbGfs2d/image.jpg', packages: [
+        { label: 'Nokos All Negara', price: 'Rp 12.000', wa: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%20Nokos%20All%20Negara%20Total%20Rp12000%20Saya%20lampirkan%20bukti%20transfer' }
       ]}
     ];
 
@@ -387,9 +428,19 @@
     const btnStart = document.getElementById('btnStart');
     const contentPanel = document.getElementById('contentPanel');
     const modal = document.getElementById('qrisModal');
+    const modalBox = document.getElementById('modalBox');
     const downloadBtn = document.getElementById('downloadQris');
     const kirimBtn = document.getElementById('kirimBukti');
     const tutupBtn = document.getElementById('tutupModal');
+    const loaderIcon = document.getElementById('loaderIcon');
+    const welcomeText = document.getElementById('welcomeText');
+    const subText = document.getElementById('subText');
+
+    // ----- auto show start after 2 seconds -----
+    setTimeout(function() {
+      loaderIcon.style.display = 'none';
+      btnStart.classList.remove('hidden');
+    }, 2000);
 
     // ----- helper render marketplace -----
     function renderMarketplace() {
@@ -397,7 +448,7 @@
       products.forEach((p, idx) => {
         const img = p.image || 'https://via.placeholder.com/200x120/ccd9e6/0a2a44?text=Produk';
         html += `<div class="product-card">
-          <img src="${img}" alt="${p.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22120%22/%3E'">
+          <img src="${img}" alt="${p.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22120%22%3E%3Crect fill=%22%23ccd9e6%22 width=%22200%22 height=%22120%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%230a2a44%22 font-size=%2214%22%3E${p.name}%3C/text%3E%3C/svg%3E'">
           <h4>${p.name}</h4>
           <div style="font-size:0.7rem; color:#1e4a6b; margin:4px 0;">${p.packages.length} paket</div>
           <button class="btn-pilih" data-prod="${idx}">Pilih Paket</button>
@@ -413,60 +464,52 @@
           const prodIdx = parseInt(this.dataset.prod);
           const prod = products[prodIdx];
           if (!prod) return;
-          // buat list paket di modal? kita tampilkan quick pilihan
-          let listHtml = `<div style="text-align:left; margin:12px 0; max-height:200px; overflow-y:auto;">`;
+          
+          let listHtml = `<div style="text-align:left; margin:8px 0; max-height:220px; overflow-y:auto;">`;
           prod.packages.forEach((pkg, i) => {
-            listHtml += `<div style="display:flex; justify-content:space-between; align-items:center; background:#f2f8fe; padding:4px 10px; border-radius:30px; margin:4px 0;">
+            listHtml += `<div class="package-list-item">
               <span><strong>${pkg.label}</strong> ${pkg.price}</span>
-              <button class="pilih-paket-item" style="background:#a4161a; color:white; border:none; border-radius:30px; padding:4px 14px; font-weight:600;" data-wa="${pkg.wa}">Pilih</button>
+              <button class="pilih-paket-item" data-wa="${pkg.wa}">Pilih</button>
             </div>`;
           });
           listHtml += `</div>`;
-          // Tampilkan di modal, kita isi ulang
-          const modalBox = modal.querySelector('.modal-box');
-          // hapus child kecuali img
-          const img = modalBox.querySelector('img');
-          modalBox.innerHTML = '';
-          modalBox.appendChild(img);
-          const div = document.createElement('div');
-          div.innerHTML = listHtml;
-          modalBox.appendChild(div);
-          // tambah tombol tutup
-          const tutup = document.createElement('button');
-          tutup.className = 'modal-btn tutup';
-          tutup.textContent = 'Tutup';
-          tutup.style.marginTop = '12px';
-          tutup.addEventListener('click', () => { modal.style.display = 'none'; });
-          modalBox.appendChild(tutup);
-          // event pilih paket
+          
+          modalBox.innerHTML = `
+            <div style="font-weight:700; color:#0a2a44; font-size:1.1rem; margin-bottom:6px;">${prod.name}</div>
+            ${listHtml}
+            <button class="modal-btn tutup" id="modalTutup" style="margin-top:8px;">Tutup</button>
+          `;
+          
+          modal.classList.add('active');
+          
+          document.getElementById('modalTutup').addEventListener('click', function() {
+            modal.classList.remove('active');
+          });
+          
           modalBox.querySelectorAll('.pilih-paket-item').forEach(b => {
             b.addEventListener('click', function(e) {
               e.stopPropagation();
               const wa = this.dataset.wa;
               if (wa) {
                 currentWaLink = wa;
-                // set kirim bukti link
                 kirimBtn.dataset.wa = wa;
-                // tampilkan qris default
-                modal.querySelector('img').src = 'https://www.upload.ee/image/19447703/file.jpg';
-                // kita ubah modal untuk menampilkan qris + tombol
+                // tampilkan qris
                 modalBox.innerHTML = `
-                  <img src="https://www.upload.ee/image/19447703/file.jpg" style="width:100%; max-height:200px; object-fit:contain; border-radius:24px;">
+                  <img src="https://www.upload.ee/image/19447703/file.jpg" style="width:100%; max-height:200px; object-fit:contain; border-radius:24px; background:#f0f6fc;" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23ddd%22 width=%22200%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23666%22 font-size=%2220%22%3EQRIS%3C/text%3E%3C/svg%3E'">
                   <div class="modal-btn-group">
                     <button class="modal-btn" id="downloadQris">📥 Download Qris</button>
                     <button class="modal-btn kirim" id="kirimBukti" data-wa="${wa}">🧾 Kirim Bukti Transfer</button>
                     <button class="modal-btn tutup" id="tutupModal">Tutup</button>
                   </div>
                 `;
-                // reattach events
                 document.getElementById('downloadQris').addEventListener('click', downloadQris);
                 document.getElementById('kirimBukti').addEventListener('click', kirimBuktiHandler);
-                document.getElementById('tutupModal').addEventListener('click', () => { modal.style.display = 'none'; });
-                modal.style.display = 'flex';
+                document.getElementById('tutupModal').addEventListener('click', function() {
+                  modal.classList.remove('active');
+                });
               }
             });
           });
-          modal.style.display = 'flex';
         });
       });
     }
@@ -490,10 +533,10 @@
     // ----- menu opsi -----
     function handleMenu(opt) {
       let html = '';
-      if (opt === '1') { // marketplace
+      if (opt === '1') {
         renderMarketplace();
         return;
-      } else if (opt === '2') { // payment
+      } else if (opt === '2') {
         html = `<div style="padding:6px 0;"><h3 style="color:#0a2a44;">💳 Payment Vincent Market</h3>
           <div class="payment-list"><strong>Qris:</strong> <br><img src="https://www.upload.ee/image/19447703/file.jpg" style="width:100%; max-height:140px; object-fit:contain; border-radius:20px; background:white; margin:4px 0;"></div>
           <div class="payment-list"><strong>Dana:</strong> 081973753505</div>
@@ -501,7 +544,7 @@
           <div class="payment-list"><strong>Ovo:</strong> 081973753505</div>
           <div style="background:#d9e9f5; border-radius:30px; padding:8px; margin-top:8px; font-weight:500;">❗ Jika Sudah Di Transfer Silahkan Kirim Bukti Transfer</div>
         </div>`;
-      } else if (opt === '3') { // social media
+      } else if (opt === '3') {
         html = `<div><h3 style="color:#0a2a44;">📱 Social Media</h3>
           <div class="payment-list">📞 Customer Service: +62 859-2836-0811</div>
           <div class="payment-list">📱 Tiktok: lightgmaill</div>
@@ -511,14 +554,14 @@
           <div class="payment-list">📢 Channel WhatsApp: https://whatsapp.com/channel/0029Vb8BSro8PgsFoGnSsm1u</div>
           <div class="payment-list">👥 Group Vincent Marketplace: https://chat.whatsapp.com/FtVqQso1drbI8T7TAMP6sc</div>
         </div>`;
-      } else if (opt === '4') { // testimoni
+      } else if (opt === '4') {
         html = `<div><h3 style="color:#0a2a44;">⭐ Testimoni</h3>
           <div class="testi-item">Abdul: Gokil</div>
           <div class="testi-item">Vinicus: Pelayanan mantep</div>
           <div class="testi-item">Rehan: mantep</div>
           <div class="testi-item">Hinata: Gacor Bot Nya Lekk</div>
         </div>`;
-      } else if (opt === '5') { // riwayat
+      } else if (opt === '5') {
         html = `<div><h3 style="color:#0a2a44;">📜 Riwayat Pembelian</h3>
           <div class="riwayat-item">Anonim - Sewa Bot Jaga Group (Biasa 7 Hari) - Rp 1.000</div>
           <div class="riwayat-item">Anonim - Panel Pterodactyle 2GB - Rp 2.500</div>
@@ -528,7 +571,7 @@
           <div class="riwayat-item">Anonim - Nokos All Negara - Rp 12.000</div>
           <div style="margin-top:8px; font-size:0.8rem; color:#1f4a6b;">* data anonim</div>
         </div>`;
-      } else if (opt === '6') { // faq
+      } else if (opt === '6') {
         html = `<div><h3 style="color:#0a2a44;">❓ FAQ</h3>
           <div class="faq-item"><strong>Apa itu Panel Bot?</strong><br>Panel Bot adalah hosting untuk menjalankan bot WhatsApp agar online 24 jam nonstop tanpa harus memakai HP utama.</div>
           <div class="faq-item"><strong>Apa itu Bot WhatsApp?</strong><br>Bot WhatsApp adalah program otomatis yang dapat membalas pesan, menjalankan perintah, membuat fitur grup, dan membantu aktivitas WhatsApp secara otomatis.</div>
@@ -539,7 +582,7 @@
       contentPanel.innerHTML = html;
     }
 
-    // ----- init event menu -----
+    // ----- event menu -----
     document.querySelectorAll('.menu-btn').forEach(btn => {
       btn.addEventListener('click', function() {
         const opt = this.dataset.opt;
@@ -547,11 +590,12 @@
       });
     });
 
-    // ----- splash & start -----
+    // ----- start -----
     btnStart.addEventListener('click', function() {
       splash.classList.add('hidden');
       main.classList.remove('hidden');
-      renderMarketplace(); // default
+      renderMarketplace();
+      
       // play lagu (spotify embed)
       const iframe = document.createElement('iframe');
       iframe.style.display = 'none';
@@ -561,15 +605,16 @@
       document.body.appendChild(iframe);
     });
 
-    // modal event global
+    // modal event
     downloadBtn.addEventListener('click', downloadQris);
     kirimBtn.addEventListener('click', kirimBuktiHandler);
-    tutupBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+    tutupBtn.addEventListener('click', function() {
+      modal.classList.remove('active');
+    });
     window.addEventListener('click', function(e) {
-      if (e.target === modal) modal.style.display = 'none';
+      if (e.target === modal) modal.classList.remove('active');
     });
 
-    // initial load: splash visible, main hidden
   })();
 </script>
 </body>
