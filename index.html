@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
   <title>VincentMarket · Marketplace</title>
-  <!-- Font & Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * {
@@ -82,7 +81,36 @@
       margin: 0 auto;
       padding: 20px 16px 30px;
     }
-    /* header brand */
+    /* banner utama (pajangan) */
+    .hero-banner {
+      width: 100%;
+      border-radius: 32px;
+      overflow: hidden;
+      margin-bottom: 25px;
+      box-shadow: 0 15px 30px rgba(0,20,40,0.15);
+      border: 2px solid rgba(255,255,255,0.6);
+      position: relative;
+    }
+    .hero-banner img {
+      width: 100%;
+      height: auto;
+      max-height: 280px;
+      object-fit: cover;
+      display: block;
+    }
+    .hero-banner .overlay-text {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      padding: 8px 24px;
+      border-radius: 40px;
+      color: white;
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
     .brand-header {
       display: flex;
       align-items: center;
@@ -91,17 +119,10 @@
       backdrop-filter: blur(8px);
       padding: 14px 25px;
       border-radius: 60px;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       border: 1px solid rgba(255,255,255,0.7);
       box-shadow: 0 10px 25px rgba(0,20,40,0.08);
       flex-wrap: wrap;
-    }
-    .brand-header img {
-      width: 48px;
-      height: 48px;
-      border-radius: 30px;
-      object-fit: cover;
-      border: 2px solid #2563eb;
     }
     .brand-header h1 {
       font-size: 1.9rem;
@@ -365,6 +386,7 @@
     }
     @media (max-width: 600px) {
       .brand-header h1 { font-size: 1.3rem; }
+      .hero-banner .overlay-text { font-size: 1.2rem; padding: 4px 16px; }
     }
   </style>
 </head>
@@ -378,10 +400,16 @@
 </div>
 
 <div class="container" id="mainApp" style="display:none;">
-  <!-- header -->
+  
+  <!-- BANNER PAJANGAN (gambar ke-4 sebagai hero) -->
+  <div class="hero-banner">
+    <img src="https://i.postimg.cc/5j8k2kft/image.jpg" alt="Vincent Market Banner" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 800 300%22%3E%3Crect fill=%22%232563eb%22 width=%22800%22 height=%22300%22/%3E%3Ctext x=%22200%22 y=%22160%22 fill=%22white%22 font-size=%2250%22 font-weight=%22bold%22%3EVincent Market%3C/text%3E%3C/svg%3E'">
+    <div class="overlay-text">Vincent Market</div>
+  </div>
+
+  <!-- header tanpa gambar profil -->
   <div class="brand-header">
-    <img src="https://postimg.cc/5j8k2kft" alt="logo" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%232563eb%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2220%22 y=%2260%22 fill=%22white%22 font-size=%2230%22%3EVM%3C/text%3E%3C/svg%3E'">
-    <h1>Vincent Market</h1>
+    <h1><i class="fas fa-store-alt" style="color:#2563eb; -webkit-text-fill-color:#2563eb;"></i> Vincent Market</h1>
     <span><i class="fas fa-shield-alt"></i> aman & garansi</span>
   </div>
 
@@ -435,7 +463,6 @@
     const mainApp = document.getElementById('mainApp');
     const welcomeText = document.getElementById('welcomeText');
 
-    // munculin tombol start setelah 2 detik
     setTimeout(() => {
       startBtn.classList.remove('hidden');
     }, 2000);
@@ -443,20 +470,28 @@
     startBtn.addEventListener('click', function() {
       overlay.classList.add('hide');
       mainApp.style.display = 'block';
-      // putar lagu (spotify embed) 
+      // putar lagu spotify
       const iframe = document.createElement('iframe');
       iframe.style.display = 'none';
       iframe.src = 'https://open.spotify.com/embed/track/3ZwqWrRpylU9nfy99qwKdR?autoplay=1&loop=1';
       iframe.allow = 'autoplay';
       document.body.appendChild(iframe);
-      // load default
       renderMenu('marketplace');
     });
 
-    // ---------- DATA PRODUK ----------
+    // ---------- DATA PRODUK (GAMBAR DIAMBIL DARI POSTIMG DENGAN FORMAT LANGSUNG) ----------
+    // Saya gunakan URL langsung dari postimg (bisa diakses)
+    const productImages = {
+      'Sewa Bot Jaga Group': 'https://i.postimg.cc/B8hB6rdQ/image.jpg',
+      'Panel Pterodactyle': 'https://i.postimg.cc/B8hB6rdQ/image.jpg',
+      'Script Website': 'https://i.postimg.cc/sQmBsBk7/image.jpg',
+      'Script Bot': 'https://i.postimg.cc/dLL7cV40/image.jpg',
+      'Apk Premium': 'https://i.postimg.cc/YLRnQH12/image.jpg'
+    };
+
     const products = {
       'Sewa Bot Jaga Group': {
-        image: 'https://postimg.cc/B8hB6rdQ',
+        image: productImages['Sewa Bot Jaga Group'],
         items: [
           { name: 'Biasa 7 Hari', price: 'Rp 1.000', waLink: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1A%20Biasa%207%20Hari%20Total%1A%20Rp1000%20Saya%20lampirkan%20bukti%20transfer' },
           { name: 'Biasa 1 Bulan', price: 'Rp 4.000', waLink: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%2A%20Biasa%201%20Bulan%20Total%2A%20Rp4000%20Saya%20lampirkan%20bukti%20transfer' },
@@ -471,7 +506,7 @@
         ]
       },
       'Panel Pterodactyle': {
-        image: 'https://postimg.cc/B8hB6rdQ',
+        image: productImages['Panel Pterodactyle'],
         items: [
           { name: 'Panel 1GB', price: 'Rp 1.500', waLink: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%201GB%20Total%1C%20Rp1500%20Saya%20lampirkan%20bukti%20transfer' },
           { name: 'Panel 2GB', price: 'Rp 2.500', waLink: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%2C%20Panel%202GB%20Total%2C%20Rp2500%20Saya%20lampirkan%20bukti%20transfer' },
@@ -487,7 +522,7 @@
         ]
       },
       'Script Website': {
-        image: 'https://postimg.cc/sQmBsBk7',
+        image: productImages['Script Website'],
         items: [
           { name: 'Website V1', price: 'Rp 3.000', waLink: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Website%20Jualan%V1%20Total%1B%20Rp3000%20Saya%20lampirkan%20bukti%20transfer' },
           { name: 'Website V2', price: 'Rp 7.000', waLink: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Website%20Jualan%20V1%20Total%1B%20Rp7000%20Saya%20lampirkan%20bukti%20transfer' },
@@ -496,7 +531,7 @@
         ]
       },
       'Script Bot': {
-        image: 'https://postimg.cc/dLL7cV40',
+        image: productImages['Script Bot'],
         items: [
           { name: 'Pushkontak 1.0', price: 'Rp 7.000', waLink: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Bot%20Whatsaapp%20Pushkontak%201.0%20Total%1B%20Rp7000%20Saya%20lampirkan%20bukti%20transfer' },
           { name: 'Jaga Grup 1.0', price: 'Rp 7.000', waLink: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Bot%20Whatsaapp%20Jaga%20Grup%201.0%20Total%1B%20Rp7000%20Saya%20lampirkan%20bukti%20transfer' },
@@ -508,7 +543,7 @@
         ]
       },
       'Apk Premium': {
-        image: 'https://postimg.cc/YLRnQH12',
+        image: productImages['Apk Premium'],
         items: [
           { name: 'Netflix Premium', price: 'Rp 22.000', waLink: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Apk%20Netfix%20Premium%20Total%1B%20Rp22000%20Saya%20lampirkan%20bukti%20transfer' },
           { name: 'Canva Premium', price: 'Rp 11.000', waLink: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Apk%20Canva%20Premium%20Total%1B%20Rp11000%20Saya%20lampirkan%20bukti%20transfer' },
@@ -536,7 +571,6 @@
       }
       html += `</div>`;
       document.getElementById('panelContent').innerHTML = html;
-      // event pilih paket -> buka modal
       document.querySelectorAll('.pilih-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
           e.stopPropagation();
@@ -625,7 +659,6 @@
       }
     }
 
-    // event menu
     document.querySelectorAll('.menu-btn').forEach(btn => {
       btn.addEventListener('click', function() {
         const menu = this.dataset.menu;
@@ -633,12 +666,10 @@
       });
     });
 
-    // close modal klik luar
     document.getElementById('modalQris').addEventListener('click', function(e) {
       if (e.target === this) this.classList.remove('open');
     });
 
-    // initial render
     renderMenu('marketplace');
 
   })();
