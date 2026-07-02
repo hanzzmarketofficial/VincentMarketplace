@@ -231,6 +231,19 @@
       flex-shrink: 0;
       transition: 0.2s;
     }
+    .product-card .img-placeholder {
+      width: 100%;
+      height: 140px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      background: #2563eb;
+    }
     .product-card img {
       width: 100%;
       height: 140px;
@@ -468,18 +481,29 @@
       renderMenu('marketplace');
     });
 
-    // DATA PRODUK dengan gambar spesifik
+    // DATA PRODUK - setiap kategori punya gambar unik
+    // Gunakan link yang diberikan, tapi jika gagal akan tampil placeholder berwarna
     const productImages = {
       'Sewa Bot Jaga Group': 'https://i.postimg.cc/B8hB6rdQ/image.jpg',
-      'Panel Pterodactyle': 'https://i.postimg.cc/BnKG3QdL/file-0000000069e47208aa68032092a29b9b.png', // GAMBAR BARU
+      'Panel Pterodactyle': 'https://i.postimg.cc/mPBnNRZB/file-0000000069e47208aa68032092a29b9b.png', // gambar baru
       'Script Website': 'https://i.postimg.cc/sQmBsBk7/image.jpg',
       'Script Bot': 'https://i.postimg.cc/dLL7cV40/image.jpg',
       'Apk Premium': 'https://i.postimg.cc/YLRnQH12/image.jpg'
     };
 
+    // Warna fallback untuk setiap kategori (agar berbeda)
+    const categoryColors = {
+      'Sewa Bot Jaga Group': '#1e3a5f',
+      'Panel Pterodactyle': '#0d9488',
+      'Script Website': '#7c3aed',
+      'Script Bot': '#dc2626',
+      'Apk Premium': '#d97706'
+    };
+
     const products = {
       'Sewa Bot Jaga Group': {
         image: productImages['Sewa Bot Jaga Group'],
+        color: categoryColors['Sewa Bot Jaga Group'],
         items: [
           { name: 'Biasa 7 Hari', price: 'Rp 1.000', waLink: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1A%20Biasa%207%20Hari%20Total%1A%20Rp1000%20Saya%20lampirkan%20bukti%20transfer' },
           { name: 'Biasa 1 Bulan', price: 'Rp 4.000', waLink: 'https://wa.me/6282136040582?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%2A%20Biasa%201%20Bulan%20Total%2A%20Rp4000%20Saya%20lampirkan%20bukti%20transfer' },
@@ -495,6 +519,7 @@
       },
       'Panel Pterodactyle': {
         image: productImages['Panel Pterodactyle'],
+        color: categoryColors['Panel Pterodactyle'],
         items: [
           { name: 'Panel 1GB', price: 'Rp 1.500', waLink: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Panel%201GB%20Total%1C%20Rp1500%20Saya%20lampirkan%20bukti%20transfer' },
           { name: 'Panel 2GB', price: 'Rp 2.500', waLink: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%2C%20Panel%202GB%20Total%2C%20Rp2500%20Saya%20lampirkan%20bukti%20transfer' },
@@ -511,6 +536,7 @@
       },
       'Script Website': {
         image: productImages['Script Website'],
+        color: categoryColors['Script Website'],
         items: [
           { name: 'Website V1', price: 'Rp 3.000', waLink: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Website%20Jualan%V1%20Total%1B%20Rp3000%20Saya%20lampirkan%20bukti%20transfer' },
           { name: 'Website V2', price: 'Rp 7.000', waLink: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Website%20Jualan%20V1%20Total%1B%20Rp7000%20Saya%20lampirkan%20bukti%20transfer' },
@@ -520,6 +546,7 @@
       },
       'Script Bot': {
         image: productImages['Script Bot'],
+        color: categoryColors['Script Bot'],
         items: [
           { name: 'Pushkontak 1.0', price: 'Rp 7.000', waLink: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Bot%20Whatsaapp%20Pushkontak%201.0%20Total%1B%20Rp7000%20Saya%20lampirkan%20bukti%20transfer' },
           { name: 'Jaga Grup 1.0', price: 'Rp 7.000', waLink: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Script%20Bot%20Whatsaapp%20Jaga%20Grup%201.0%20Total%1B%20Rp7000%20Saya%20lampirkan%20bukti%20transfer' },
@@ -532,6 +559,7 @@
       },
       'Apk Premium': {
         image: productImages['Apk Premium'],
+        color: categoryColors['Apk Premium'],
         items: [
           { name: 'Netflix Premium', price: 'Rp 22.000', waLink: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Apk%20Netfix%20Premium%20Total%1B%20Rp22000%20Saya%20lampirkan%20bukti%20transfer' },
           { name: 'Canva Premium', price: 'Rp 11.000', waLink: 'https://wa.me/628213604058?text=Halo%20Admin%2C%20saya%20sudah%20bayar.%20Paket%1C%20Apk%20Canva%20Premium%20Total%1B%20Rp11000%20Saya%20lampirkan%20bukti%20transfer' },
@@ -549,7 +577,12 @@
         html += `<div class="product-category"><div class="category-title">${cat}</div><div class="product-slider">`;
         data.items.forEach(item => {
           html += `<div class="product-card">
-            <img src="${data.image}" alt="${item.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%23dbeafe%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2220%22 y=%2260%22 fill=%22%232563eb%22 font-size=%2220%22%3E${cat.substring(0,3)}%3C/text%3E%3C/svg%3E'">
+            <img src="${data.image}" alt="${item.name}" 
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                 style="display:block;">
+            <div class="img-placeholder" style="display:none; background:${data.color};">
+              ${cat.substring(0,3)}
+            </div>
             <div class="name">${item.name}</div>
             <div class="price">${item.price}</div>
             <button class="pilih-btn" data-wa="${item.waLink}">Pilih Paket</button>
